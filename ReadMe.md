@@ -5,13 +5,13 @@
 # 2. Preparations before using this package
 
 ## 2.1 install the gazebo_ros interface module
-   gazebo_ros_pkgs: http://gazebosim.org/tutorials?tut=ros_installing
-	ros_control: http://wiki.ros.org/ros_control (remember to choose your ROS distribution)
+   gazebo_ros_pkgs: <http://gazebosim.org/tutorials?tut=ros_installing>
+   ros_control: <http://wiki.ros.org/ros_control> (remember to choose your ROS distribution)
 
 ## 2.2 Go through the official tutorial documents
-	ROS Wiki: http://wiki.ros.org/
-	Gazebo Tutorial: http://gazebosim.org/tutorials
-	Gazebo ROS Control: http://gazebosim.org/tutorials/?tut=ros_control
+ROS Wiki: <http://wiki.ros.org/>
+Gazebo Tutorial: <http://gazebosim.org/tutorials>
+Gazebo ROS Control: <http://gazebosim.org/tutorials/?tut=ros_control>
 
 ## 2.3 Download the 'table' 3D model
    In Gazebo simulator, navigate through the model database for 'table' item, drag and place the 3D model inside the virtual environment. It will then be downloaded locally, as 'table' is needed running the demo.
@@ -19,13 +19,13 @@
 # 3. Usage of ROS package 'xarm_robot'
    
 ## 3.1 Create a catkin workspace, if you have already done this, skip and move on to next part.
-   follow the instructions in this page: http://wiki.ros.org/catkin/Tutorials/create_a_workspace
+   follow the instructions in [this page:] (http://wiki.ros.org/catkin/Tutorials/create_a_workspace)
    Please note that this readme instruction assumes the user continues to use '~/catkin_ws' as directory of the workspace.
 
 ## 3.2 Obtain the package
    ```bash
    $ cd ~/catkin_ws/src
-   git clone https://github.com/uArm-Developer/ros_for_xarm.git
+   $ git clone https://github.com/uArm-Developer/ros_for_xarm.git
    ```
 
 ## 3.3 build the code
@@ -64,8 +64,8 @@
 
 ### 4.3.3 xarm_controller/src, xarm_controller/include
    User can apply ROS API to program in C++ or python to make a program to control the virtual robot to move or monitor its status. Source files can be put here, remember to edit CMakeLists.txt before compiling. Refer to:
-   http://wiki.ros.org/ROS/Tutorials/WritingPublisherSubscriber%28c%2B%2B%29
-   http://wiki.ros.org/ROS/Tutorials/WritingServiceClient%28c%2B%2B%29
+   <http://wiki.ros.org/ROS/Tutorials/WritingPublisherSubscriber%28c%2B%2B%29> ;
+   <http://wiki.ros.org/ROS/Tutorials/WritingServiceClient%28c%2B%2B%29>
 
 ### 4.3.4 xarm_controller/launch
 For launch files that bring along all steps for a simulation in proper order. User can refer to the file provided, load and initiate controllers from yaml configuration file and then run user application program to command robot arm to move.
