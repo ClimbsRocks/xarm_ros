@@ -14,7 +14,7 @@ Gazebo Tutorial: <http://gazebosim.org/tutorials>
 Gazebo ROS Control: <http://gazebosim.org/tutorials/?tut=ros_control>  
 
 ## 2.3 Download the 'table' 3D model
-&ensp&enspIn Gazebo simulator, navigate through the model database for 'table' item, drag and place the 3D model inside the virtual environment. It will then be downloaded locally, as 'table' is needed running the demo.
+&ensp &ensp In Gazebo simulator, navigate through the model database for 'table' item, drag and place the 3D model inside the virtual environment. It will then be downloaded locally, as 'table' is needed running the demo.
 
 # 3. Usage of ROS package 'xarm_robot'
    
