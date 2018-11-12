@@ -16,7 +16,7 @@ Gazebo ROS Control: <http://gazebosim.org/tutorials/?tut=ros_control>
 ## 2.3 Download the 'table' 3D model
 &ensp;&ensp;In Gazebo simulator, navigate through the model database for 'table' item, drag and place the 3D model inside the virtual environment. It will then be downloaded locally, as 'table' is needed running the demo.
 
-# 3. Usage of ROS package 'xarm_robot'
+# 3. Usage of ROS package 'xarm_ros'
    
 ## 3.1 Create a catkin workspace. 
    &ensp;&ensp;If you have already have a workspace, skip and move on to next part.
@@ -26,7 +26,7 @@ Gazebo ROS Control: <http://gazebosim.org/tutorials/?tut=ros_control>
 ## 3.2 Obtain the package
    ```bash
    $ cd ~/catkin_ws/src
-   $ git clone https://github.com/uArm-Developer/ros_for_xarm.git
+   $ git clone https://github.com/xArm-Developer/xarm_ros.git
    ```
 
 ## 3.3 Build the code
