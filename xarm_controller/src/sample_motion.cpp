@@ -1,3 +1,9 @@
+/* Copyright 2018 UFACTORY Inc. All Rights Reserved.
+ *
+ * Software License Agreement (BSD License)
+ *
+ * Author: Jason Peng <jason@ufactory.cc>
+ ============================================================================*/
 #include "ros/ros.h"
 #include "std_msgs/Float64.h"
 
