@@ -14,12 +14,12 @@ Gazebo Tutorial: <http://gazebosim.org/tutorials>
 Gazebo ROS Control: <http://gazebosim.org/tutorials/?tut=ros_control>  
 
 ## 2.3 Download the 'table' 3D model
-   In Gazebo simulator, navigate through the model database for 'table' item, drag and place the 3D model inside the virtual environment. It will then be downloaded locally, as 'table' is needed running the demo.
+&ensp&enspIn Gazebo simulator, navigate through the model database for 'table' item, drag and place the 3D model inside the virtual environment. It will then be downloaded locally, as 'table' is needed running the demo.
 
 # 3. Usage of ROS package 'xarm_robot'
    
 ## 3.1 Create a catkin workspace, if you have already done this, skip and move on to next part.
-   follow the instructions in [this page](http://wiki.ros.org/catkin/Tutorials/create_a_workspace) 
+   Follow the instructions in [this page](http://wiki.ros.org/catkin/Tutorials/create_a_workspace) 
    Please note that this readme instruction assumes the user continues to use '~/catkin_ws' as directory of the workspace.
 
 ## 3.2 Obtain the package
@@ -38,21 +38,21 @@ Gazebo ROS Control: <http://gazebosim.org/tutorials/?tut=ros_control>
    ```bash
    $ roslaunch xarm_gazebo xarm7_beside_table.launch 
    ```
-   motion will start after clicking on "play" button. The command trajectory is written in xarm_controller\src\sample_motion. And the arm in this demo is controlled by pure position interface.
+   Motion will start after clicking on "play" button. The command trajectory is written in xarm_controller\src\sample_motion. And the arm in this demo is controlled by pure position interface.
 
 # 4. Package structure
    
 ## 4.1 xarm_description
-   xarm7 description files, mesh files and gazebo plugin configurations, etc. It's not recommended to change the xarm description file since other packages depend on it. 
+   xArm7 description files, mesh files and gazebo plugin configurations, etc. It's not recommended to change the xarm description file since other packages depend on it. 
 
 ## 4.2 xarm_gazebo
-   gazebo world description files and simulation launch files. User can add or build their own models in the simulation world file.
+   Gazebo world description files and simulation launch files. User can add or build their own models in the simulation world file.
 
 ## 4.3 xarm_controller
-   controller configurations, robot command executable source, scripts and launch files. User can deploy their program inside this package or create their own.
+   Controller configurations, robot command executable source, scripts and launch files. User can deploy their program inside this package or create their own.
 
 ### 4.3.1 xarm_controller/config
-   controller parameters to load into server, there are three basic types of controllers:  
+   Controller parameters to load into server, there are three basic types of controllers:  
    1) joint_state_controller/JointStateController: controller that publshes joint status, for Rviz or feedback.  
    2) effort_controllers/JointPositionController: position controller that has joint effort (torque) interface.  
    3) effort_controllers/JointEffortController: pure joint effort controller.  
