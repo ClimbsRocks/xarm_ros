@@ -1,6 +1,6 @@
 ## xarm7_moveit_config
 
- 	xarm7 moveit的配置文件
+ 	xarm7 moveit configurations
 
 ### Unit test
 
