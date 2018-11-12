@@ -19,8 +19,8 @@ Gazebo ROS Control: <http://gazebosim.org/tutorials/?tut=ros_control>
 # 3. Usage of ROS package 'xarm_robot'
    
 ## 3.1 Create a catkin workspace. 
-   &ensp;&ensp;if you have already done this, skip and move on to next part.
-   Follow the instructions in [this page](http://wiki.ros.org/catkin/Tutorials/create_a_workspace) 
+   &ensp;&ensp;If you have already have a workspace, skip and move on to next part.
+   Follow the instructions in [this page](http://wiki.ros.org/catkin/Tutorials/create_a_workspace). 
    Please note that this readme instruction assumes the user continues to use '~/catkin_ws' as directory of the workspace.
 
 ## 3.2 Obtain the package
