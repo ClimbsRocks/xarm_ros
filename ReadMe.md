@@ -4,7 +4,7 @@
 
 # 2. Preparations before using this package
 
-## 2.1 install the gazebo_ros interface module
+## 2.1 Install the gazebo_ros interface module
    gazebo_ros_pkgs: <http://gazebosim.org/tutorials?tut=ros_installing>  
    ros_control: <http://wiki.ros.org/ros_control> (remember to choose your ROS distribution)  
    
@@ -18,8 +18,9 @@ Gazebo ROS Control: <http://gazebosim.org/tutorials/?tut=ros_control>
 
 # 3. Usage of ROS package 'xarm_robot'
    
-## 3.1 Create a catkin workspace, if you have already done this, skip and move on to next part.
-   &ensp;&ensp;Follow the instructions in [this page](http://wiki.ros.org/catkin/Tutorials/create_a_workspace) 
+## 3.1 Create a catkin workspace. 
+   &ensp;&ensp;if you have already done this, skip and move on to next part.
+   Follow the instructions in [this page](http://wiki.ros.org/catkin/Tutorials/create_a_workspace) 
    Please note that this readme instruction assumes the user continues to use '~/catkin_ws' as directory of the workspace.
 
 ## 3.2 Obtain the package
@@ -28,13 +29,21 @@ Gazebo ROS Control: <http://gazebosim.org/tutorials/?tut=ros_control>
    $ git clone https://github.com/uArm-Developer/ros_for_xarm.git
    ```
 
-## 3.3 build the code
+## 3.3 Build the code
    ```bash
    $ cd ~/catkin_ws
    $ catkin_make
    ```
+## 3.4 Source the setup script
+```bash
+$ echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
+```
+Skip above operation if you already have that inside your ~/.bashrc. Then do:
+```bash
+$ source ~/.bashrc
+```
 
-## 3.4 run the demo in Gazebo simulator
+## 3.5 Run the demo in Gazebo simulator
    ```bash
    $ roslaunch xarm_gazebo xarm7_beside_table.launch 
    ```
