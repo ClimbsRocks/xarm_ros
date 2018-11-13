@@ -1,9 +1,11 @@
 # 1. Introduction
-   &ensp;&ensp;This repository contains the new xarm description file and 3D models for simulations based on ROS and Gazebo.
+   &ensp;&ensp;This repository contains the 3D model of xArm and demo packages for ROS development and simulations.
    Maintained by: Jimy (jimy.zhang@ufactory.cc) and Jason (jason@ufactory.cc)
 
 # 2. Update Summary
    This is the initial version, tests, bug fixes and new functions are to be updated regularly in the future. 
+   * Add xArm 7 description files, meshes and sample controller demos for ROS simulation and visualization ONLY.
+   * Direct control of real xArm is not yet available.
 
 # 3. Preparations before using this package
 
