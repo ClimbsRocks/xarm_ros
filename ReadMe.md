@@ -50,9 +50,9 @@ $ source ~/.bashrc
 
 ## 4.5 Run the demo in Gazebo simulator
    ```bash
-   $ roslaunch xarm_gazebo xarm7_beside_table.launch 
+   $ roslaunch xarm_gazebo xarm7_beside_table.launch [run_demo:=true]
    ```
-&ensp;&ensp;Motion will start after clicking on "play" button. The command trajectory is written in xarm_controller\src\sample_motion.cpp. And the arm in this demo is controlled by pure position interface.
+&ensp;&ensp;Add the run_demo option if you with to see a pre-programed loop motion in action. The command trajectory is written in xarm_controller\src\sample_motion.cpp. And the trajectory in this demo is controlled by pure position interface.
 
 # 5. Package structure
    
@@ -94,7 +94,7 @@ $ source ~/.bashrc
    To run Moveit! motion planner along with Gazebo simulator:  
    First run:  
    ```bash
-   $ roslaunch xarm7_moveit_config xarm7_moveit_gazebo.launch
+   $ roslaunch xarm_gazebo xarm7_beside_table.launch
    ```
    Then in another terminal:
    ```bash
