@@ -3,9 +3,9 @@
    Maintained by: Jimy (jimy.zhang@ufactory.cc) and Jason (jason@ufactory.cc)
 
 # 2. Update Summary
-   This is the initial version, tests, bug fixes and new functions are to be updated regularly in the future. 
-   * Add xArm 7 description files, meshes and sample controller demos for ROS simulation and visualization ONLY.
-   * Direct control of real xArm is not yet available.
+   This is in early development, tests, bug fixes and new functions are to be updated regularly in the future. 
+   * Add xArm 7 description files, meshes and sample controller demos for ROS simulation and visualization.
+   * Direct control of real xArm through Moveit GUI is out in beta version, not fully developed yet!
 
 # 3. Preparations before using this package
 
@@ -91,7 +91,7 @@ $ source ~/.bashrc
    $ roslaunch xarm7_moveit_config demo.launch
    ```
 
-   To run Moveit! motion planner along with Gazebo simulator:  
+#### To run Moveit! motion planner along with Gazebo simulator:  
    First run:  
    ```bash
    $ roslaunch xarm_gazebo xarm7_beside_table.launch
@@ -101,3 +101,10 @@ $ source ~/.bashrc
    $ roslaunch xarm7_moveit_config xarm7_moveit_gazebo.launch
    ```
    If you have a satisfied motion planned in Moveit!, hit the "Execute" button and the virtual arm in Gazebo will execute the trajectory.
+
+#### To run Moveit! motion planner along with Gazebo simulator:  
+   First make sure the real xArm and the controller box is powered on, then run:  
+   ```bash
+   $ roslaunch xarm7_moveit_config realMove_test.launch robot_ip:=[your controller box LAN IP address]
+   ```
+   Examine the terminal output and see if any error occured during the launch. If not, just play with the robot in Rviz and you can execute the sucessfully planned trajectory on real arm. But make sure it will not hit any surroundings before execution! 
