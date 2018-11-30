@@ -53,7 +53,7 @@ $ source ~/.bashrc
    ```bash
    $ roslaunch xarm_gazebo xarm7_beside_table.launch [run_demo:=true]
    ```
-&ensp;&ensp;Add the run_demo option if you with to see a pre-programed loop motion in action. The command trajectory is written in xarm_controller\src\sample_motion.cpp. And the trajectory in this demo is controlled by pure position interface.
+&ensp;&ensp;Add the run_demo option if you wish to see a pre-programed loop motion in action. The command trajectory is written in xarm_controller\src\sample_motion.cpp. And the trajectory in this demo is controlled by pure position interface.
 
 # 5. Package structure
    
