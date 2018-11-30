@@ -3,9 +3,10 @@
    Maintained by: Jimy (jimy.zhang@ufactory.cc) and Jason (jason@ufactory.cc)
 
 # 2. Update Summary
-   This is in early development, tests, bug fixes and new functions are to be updated regularly in the future. 
+   This package is still in early development, tests, bug fixes and new functions are to be updated regularly in the future. 
    * Add xArm 7 description files, meshes and sample controller demos for ROS simulation and visualization.
-   * Direct control of real xArm through Moveit GUI is out in beta version, not fully developed yet!
+   * Add Moveit! planner support to control Gazebo virtual model and real xArm, but the two can not launch together.
+   * Direct control of real xArm through Moveit GUI is still in beta version, please use it with special care.
 
 # 3. Preparations before using this package
 
@@ -102,9 +103,9 @@ $ source ~/.bashrc
    ```
    If you have a satisfied motion planned in Moveit!, hit the "Execute" button and the virtual arm in Gazebo will execute the trajectory.
 
-#### To run Moveit! motion planner along with Gazebo simulator:  
-   First make sure the real xArm and the controller box is powered on, then run:  
+#### To run Moveit! motion planner to control the real xArm:  
+   First, you should have the xArm-Python-SDK properly installed on your system, which is needed to command the hardware. Then make sure the xArm and the controller box is powered on, then execute:  
    ```bash
-   $ roslaunch xarm7_moveit_config realMove_test.launch robot_ip:=[your controller box LAN IP address]
+   $ roslaunch xarm7_moveit_config realMove_exec.launch robot_ip:=[your controller box LAN IP address]
    ```
-   Examine the terminal output and see if any error occured during the launch. If not, just play with the robot in Rviz and you can execute the sucessfully planned trajectory on real arm. But make sure it will not hit any surroundings before execution! 
+   Examine the terminal output and see if any error occured during the launch. If not, just play with the robot in Rviz and you can execute the sucessfully planned trajectory on real arm. But be sure it will not hit any surroundings before execution! 

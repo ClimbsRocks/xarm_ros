@@ -1,6 +1,9 @@
 <launch>
-
-  <include file="$(find xarm7_moveit_config)/launch/planning_context.launch" />
+  <!-- <arg name="limit_range" default="false" />
+  Remove planning_context launch because it is redundant
+  <include file="$(find xarm7_moveit_config)/launch/planning_context.launch">
+    <arg name="load_robot_description" value="arg $(limit_range)"/>
+  </include> -->
 
   <!-- GDB Debug Option -->
   <arg name="debug" default="false" />
