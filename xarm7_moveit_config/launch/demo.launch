@@ -45,7 +45,7 @@
 
   <!-- Run Rviz and load the default config to see the state of the move_group node -->
   <include file="$(find xarm7_moveit_config)/launch/moveit_rviz.launch">
-    <arg name="config" value="true"/>
+    <arg name="no_gui_ctrl" value="false"/>
     <arg name="debug" value="$(arg debug)"/>
   </include>
 
