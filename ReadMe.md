@@ -109,3 +109,9 @@ $ source ~/.bashrc
    $ roslaunch xarm7_moveit_config realMove_exec.launch robot_ip:=[your controller box LAN IP address]
    ```
    Examine the terminal output and see if any error occured during the launch. If not, just play with the robot in Rviz and you can execute the sucessfully planned trajectory on real arm. But be sure it will not hit any surroundings before execution! 
+
+#### To launch the xarm simple motion planner together with the real xArm:  
+```bash
+   $ roslaunch xarm_planner xarm_planner_realHW.launch robot_ip:=[your controller box LAN IP address]
+```
+This implemented simple planner interface is based on move_group and provide service for users to do planning & execution based on the requested target, user can find detailed instructions on how to use it inside ***xarm_planner package***.

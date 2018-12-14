@@ -18,7 +18,7 @@
 #include <xarm_planner/pose_plan.h>
 #include <xarm_planner/joint_plan.h>
 
-#define SPINNER_THREAD_NUM 2
+#define SPINNER_THREAD_NUM 4
 
 static const std::string PLANNING_GROUP("xarm7");
 
@@ -98,6 +98,7 @@ bool XArmSimplePlanner::do_pose_plan(xarm_planner::pose_plan::Request &req, xarm
 
 bool XArmSimplePlanner::do_joint_plan(xarm_planner::joint_plan::Request &req, xarm_planner::joint_plan::Response &res)
 {
+  ROS_ERROR("move_group_planner received new plan Request");
   group.setJointValueTarget(req.target);
   
   moveit::planning_interface::MoveGroupInterface::Plan my_plan;
@@ -113,7 +114,10 @@ bool XArmSimplePlanner::do_joint_plan(xarm_planner::joint_plan::Request &req, xa
 void XArmSimplePlanner::execute_plan_topic(const std_msgs::Bool::ConstPtr& exec)
 {
   if(exec->data)
+  { 
+    ROS_ERROR("Received Execution Command !!!!!");
     group.move();
+  }
 }
 
 
@@ -125,7 +129,7 @@ int main(int argc, char** argv)
 
   planner.start();
 
-  ROS_INFO("Waiting for shutdown");
+  ROS_ERROR("Waiting for \'pose_plan\' or \'joint_plan\' service Request ...");
 
   /* necessary: because AsyncSpinner is not operating in the same thread */
   ros::waitForShutdown();
