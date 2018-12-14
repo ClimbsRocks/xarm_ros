@@ -18,7 +18,7 @@
 #include <xarm_planner/pose_plan.h>
 #include <xarm_planner/joint_plan.h>
 
-#define SPINNER_THREAD_NUM 4
+#define SPINNER_THREAD_NUM 2
 
 static const std::string PLANNING_GROUP("xarm7");
 

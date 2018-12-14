@@ -1,3 +1,9 @@
+/* Copyright 2018 UFACTORY Inc. All Rights Reserved.
+ *
+ * Software License Agreement (BSD License)
+ *
+ * Author: Jason Peng <jason@ufactory.cc>
+ ============================================================================*/
 #include "ros/ros.h"
 #include <std_msgs/Bool.h>
 #include <xarm_planner/pose_plan.h>
@@ -38,26 +44,40 @@ int main(int argc, char** argv)
 	{
 		msg.data = true;
 		ROS_INFO("Plan SUCCESS! Executing... ");
+		ros::Duration(1.0).sleep();
 		exec_pub.publish(msg);
 	}
 
-	ros::Duration(5.0).sleep();
+	ros::Duration(4.0).sleep();
 
 	srv.request.target = tar_joint2;
 	if(request_plan(client, srv))
 	{
 		msg.data = true;
 		ROS_INFO("Plan SUCCESS! Executing... ");
+		ros::Duration(1.0).sleep();
 		exec_pub.publish(msg);
 	}
 
-	ros::Duration(5.0).sleep();
+	ros::Duration(4.0).sleep();
 
 	srv.request.target = tar_joint3;
 	if(request_plan(client, srv))
 	{
 		msg.data = true;
 		ROS_INFO("Plan SUCCESS! Executing... ");
+		ros::Duration(1.0).sleep();
+		exec_pub.publish(msg);
+	}
+
+	ros::Duration(4.0).sleep();
+
+	srv.request.target = tar_joint2;
+	if(request_plan(client, srv))
+	{
+		msg.data = true;
+		ROS_INFO("Plan SUCCESS! Executing... ");
+		ros::Duration(1.0).sleep();
 		exec_pub.publish(msg);
 	}
 
