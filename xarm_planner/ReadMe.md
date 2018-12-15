@@ -5,7 +5,7 @@
 # Usage
 First, to launch the simple planner node, run:  
 ```bash
-   $ roslaunch xarm_planner xarm_planner_realHW.launch robot_ip:=[your controller box LAN IP address]
+   $ roslaunch xarm_planner xarm_planner_realHW.launch robot_ip:=<your controller box LAN IP address>
 ```
 This node can provide services for planning request in Cartesian target and joint space target. Service definition can be found in srv folder. User can call the services to let planner solve the path to specified target point, and retrieve the boolean result as successful or not. Once the node is launched, user can try in command-line first, something like:  
 
@@ -15,8 +15,9 @@ For joint-space planning:
 ```
 Or, for Cartesian-space planning:  
 ```bash
-   $ rosservice call pose_plan 'target: [position: [0.28, -0.2, 0.5], orientation: [0.0, 0.0, 0.0, 1.0]]'
+   $ rosservice call pose_plan 'target: [[0.28, -0.2, 0.5], [0.0, 0.0, 0.0, 1.0]]'
 ```
+***Notice: Use Cartesian planning with special care, since trajectory from Moveit (OMPL) planner can be highly random and not necessarily the optimal (closest) solution, Do check it in Rviz befroe confirm to move!***  
 After calling the two services, a boolean result named 'success' will be returned.  
 If solution exists and user want to execute it on the robot, just publish a message (type: std_msgs/Bool) to the topic "/xarm_planner_exec", the boolean data should be 'true' to launch the execution:  
 ```bash

@@ -112,6 +112,6 @@ $ source ~/.bashrc
 
 #### To launch the xarm simple motion planner together with the real xArm:  
 ```bash
-   $ roslaunch xarm_planner xarm_planner_realHW.launch robot_ip:=[your controller box LAN IP address]
+   $ roslaunch xarm_planner xarm_planner_realHW.launch robot_ip:=<your controller box LAN IP address>
 ```
 This implemented simple planner interface is based on move_group and provide service for users to do planning & execution based on the requested target, user can find detailed instructions on how to use it inside ***xarm_planner package***.

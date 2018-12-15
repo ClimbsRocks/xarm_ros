@@ -48,7 +48,7 @@ int main(int argc, char** argv)
 		exec_pub.publish(msg);
 	}
 
-	ros::Duration(4.0).sleep();
+	ros::Duration(4.0).sleep(); // Wait for last execution to finish
 
 	srv.request.target = tar_joint2;
 	if(request_plan(client, srv))
@@ -59,7 +59,7 @@ int main(int argc, char** argv)
 		exec_pub.publish(msg);
 	}
 
-	ros::Duration(4.0).sleep();
+	ros::Duration(4.0).sleep(); // Wait for last execution to finish
 
 	srv.request.target = tar_joint3;
 	if(request_plan(client, srv))
@@ -70,7 +70,7 @@ int main(int argc, char** argv)
 		exec_pub.publish(msg);
 	}
 
-	ros::Duration(4.0).sleep();
+	ros::Duration(4.0).sleep(); // Wait for last execution to finish
 
 	srv.request.target = tar_joint2;
 	if(request_plan(client, srv))

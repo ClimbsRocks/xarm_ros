@@ -98,7 +98,7 @@ bool XArmSimplePlanner::do_pose_plan(xarm_planner::pose_plan::Request &req, xarm
 
 bool XArmSimplePlanner::do_joint_plan(xarm_planner::joint_plan::Request &req, xarm_planner::joint_plan::Response &res)
 {
-  ROS_ERROR("move_group_planner received new plan Request");
+  ROS_INFO("move_group_planner received new plan Request");
   group.setJointValueTarget(req.target);
   
   moveit::planning_interface::MoveGroupInterface::Plan my_plan;
@@ -115,7 +115,7 @@ void XArmSimplePlanner::execute_plan_topic(const std_msgs::Bool::ConstPtr& exec)
 {
   if(exec->data)
   { 
-    ROS_ERROR("Received Execution Command !!!!!");
+    ROS_INFO("Received Execution Command !!!!!");
     group.move();
   }
 }
@@ -129,7 +129,7 @@ int main(int argc, char** argv)
 
   planner.start();
 
-  ROS_ERROR("Waiting for \'pose_plan\' or \'joint_plan\' service Request ...");
+  ROS_INFO("Waiting for \'pose_plan\' or \'joint_plan\' service Request ...");
 
   /* necessary: because AsyncSpinner is not operating in the same thread */
   ros::waitForShutdown();
