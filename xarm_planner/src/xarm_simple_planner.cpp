@@ -17,6 +17,7 @@
 #include <std_msgs/Bool.h>
 #include <xarm_planner/pose_plan.h>
 #include <xarm_planner/joint_plan.h>
+#include <xarm_planner/exec_plan.h>
 
 #define SPINNER_THREAD_NUM 2
 
@@ -37,6 +38,7 @@ class XArmSimplePlanner
     moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
     std::vector<std::string> joint_names;
     moveit::planning_interface::MoveGroupInterface group;
+    moveit::planning_interface::MoveGroupInterface::Plan my_xarm_plan;
 
     ros::Publisher display_path;
     ros::ServiceServer plan_pose_srv;
@@ -47,6 +49,7 @@ class XArmSimplePlanner
     void init();
     bool do_pose_plan(xarm_planner::pose_plan::Request &req, xarm_planner::pose_plan::Response &res);
     bool do_joint_plan(xarm_planner::joint_plan::Request &req, xarm_planner::joint_plan::Response &res);
+    bool exec_plan_cb(xarm_planner::exec_plan::Request &req, xarm_planner::exec_plan::Response &res);
     void execute_plan_topic(const std_msgs::Bool::ConstPtr& exec);
 };
 
@@ -61,10 +64,11 @@ void XArmSimplePlanner::init()
   ROS_INFO_NAMED("move_group_planner", "End effector link: %s", group.getEndEffectorLink().c_str());
 
   /* Notice: the correct way to specify member function as callbacks */
-  plan_pose_srv = node_handle.advertiseService("pose_plan", &XArmSimplePlanner::do_pose_plan, this);
-  plan_joint_srv = node_handle.advertiseService("joint_plan", &XArmSimplePlanner::do_joint_plan, this);
+  plan_pose_srv = node_handle.advertiseService("xarm_pose_plan", &XArmSimplePlanner::do_pose_plan, this);
+  plan_joint_srv = node_handle.advertiseService("xarm_joint_plan", &XArmSimplePlanner::do_joint_plan, this);
 
   exec_plan_sub = node_handle.subscribe("xarm_planner_exec", 10, &XArmSimplePlanner::execute_plan_topic, this);
+  exec_plan_srv = node_handle.advertiseService("xarm_exec_plan", &XArmSimplePlanner::exec_plan_cb, this);
 
 }
 
@@ -87,9 +91,7 @@ bool XArmSimplePlanner::do_pose_plan(xarm_planner::pose_plan::Request &req, xarm
     req.target.position.x, req.target.position.y, req.target.position.z, req.target.orientation.x, \
     req.target.orientation.y, req.target.orientation.z, req.target.orientation.w);
 
-  moveit::planning_interface::MoveGroupInterface::Plan my_plan;
-
-  bool success = (group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+  bool success = (group.plan(my_xarm_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
   res.success = success;
   ROS_INFO_NAMED("move_group_planner", "This plan (pose goal) %s", success ? "SUCCEEDED" : "FAILED");
   
@@ -101,13 +103,25 @@ bool XArmSimplePlanner::do_joint_plan(xarm_planner::joint_plan::Request &req, xa
   ROS_INFO("move_group_planner received new plan Request");
   group.setJointValueTarget(req.target);
   
-  moveit::planning_interface::MoveGroupInterface::Plan my_plan;
-
-  bool success = (group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+  bool success = (group.plan(my_xarm_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
   res.success = success;
   ROS_INFO_NAMED("move_group_planner", "This plan (joint goal) %s", success ? "SUCCEEDED" : "FAILED");
   
   return success;
+}
+
+bool XArmSimplePlanner::exec_plan_cb(xarm_planner::exec_plan::Request &req, xarm_planner::exec_plan::Response &res)
+{
+  if(req.exec)
+  {
+    ROS_INFO("Received Execution Service Request");
+    bool finish_ok = (group.execute(my_xarm_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS); /* return after execution finish */
+    res.success = finish_ok;
+    return finish_ok;
+  }
+
+  res.success = false;
+  return false;
 }
 
 /* execution subscriber call-back function */
@@ -116,7 +130,7 @@ void XArmSimplePlanner::execute_plan_topic(const std_msgs::Bool::ConstPtr& exec)
   if(exec->data)
   { 
     ROS_INFO("Received Execution Command !!!!!");
-    group.move();
+    group.asyncExecute(my_xarm_plan); /* return without waiting for finish */
   }
 }
 

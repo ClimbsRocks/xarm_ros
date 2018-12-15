@@ -106,7 +106,7 @@ $ source ~/.bashrc
 #### To run Moveit! motion planner to control the real xArm:  
    First, you should have the xArm-Python-SDK properly installed on your system, which is needed to command the hardware. Then make sure the xArm and the controller box is powered on, then execute:  
    ```bash
-   $ roslaunch xarm7_moveit_config realMove_exec.launch robot_ip:=[your controller box LAN IP address]
+   $ roslaunch xarm7_moveit_config realMove_exec.launch robot_ip:=<your controller box LAN IP address>
    ```
    Examine the terminal output and see if any error occured during the launch. If not, just play with the robot in Rviz and you can execute the sucessfully planned trajectory on real arm. But be sure it will not hit any surroundings before execution! 
 
