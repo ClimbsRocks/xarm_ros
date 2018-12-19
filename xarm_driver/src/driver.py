@@ -24,7 +24,7 @@ from xarm.wrapper import XArmAPI
 
 DOF = 7
 JOINT_NAMES = ['joint1', 'joint2', 'joint3', 'joint4', 'joint5', 'joint6', 'joint7']
-UPDATE_RATE_HZ = 50
+UPDATE_RATE_HZ = 100
 STOP_DURATION = 0.1
 P_TOLERANCE = [0.01]*DOF
 GAP_TOL_RAD = 0.1
