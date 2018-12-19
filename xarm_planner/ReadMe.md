@@ -3,7 +3,12 @@
 &ensp;&ensp;Inside the package, 'xarm_simple_planner' is just a basic implementation of the Move_group interface, if higher level configurations (constraints, switch kinematic solver or planners, etc) are needed, user can fully explore Moveit abilities and implement a sofisticated version.
 
 # Usage
-First, to launch the simple planner node, run:  
+##Launch the simple planner node:
+If you want to try it in simulation, run:
+```bash
+   $ roslaunch xarm_planner xarm_planner_rviz_sim.launch
+```
+Or, if you would work with real XArm, run:  
 ```bash
    $ roslaunch xarm_planner xarm_planner_realHW.launch robot_ip:=<your controller box LAN IP address>
 ```
