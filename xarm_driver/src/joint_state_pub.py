@@ -18,7 +18,7 @@ from sensor_msgs.msg import JointState
 from xarm.wrapper import XArmAPI
 
 PUB_TOPIC = 'joint_states'
-PUB_RATE_HZ = 20
+PUB_RATE_HZ = 25
 DOF = 7
 JOINT_NAMES = ['joint1', 'joint2', 'joint3', 'joint4', 'joint5', 'joint6', 'joint7']\
 

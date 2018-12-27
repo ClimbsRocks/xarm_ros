@@ -1,5 +1,5 @@
 # 1. Introduction
-   &ensp;&ensp;This repository contains the 3D model of xArm and demo packages for ROS development and simulations.
+   &ensp;&ensp;This repository contains the 3D model of xArm and demo packages for ROS development and simulations.Developing and testing environment: Ubuntu 16.04 + ROS Kinetic Kame. 
    Maintained by: Jimy (jimy.zhang@ufactory.cc) and Jason (jason@ufactory.cc)
 
 # 2. Update Summary

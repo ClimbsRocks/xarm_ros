@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(xarm_controller)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
+add_compile_options(-std=c++11)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -10,7 +10,18 @@ project(xarm_controller)
 find_package(catkin REQUIRED COMPONENTS
   controller_manager
   joint_state_controller
-  robot_state_publisher
+  # robot_state_publisher
+  # cmake_modules
+  control_msgs
+  control_toolbox
+  hardware_interface
+  # joint_limits_interface
+  # roscpp
+  sensor_msgs
+  std_msgs
+  # trajectory_msgs
+  # transmission_interface
+  # urdf
 )
 
 ## System dependencies are found with CMake's conventions
@@ -201,4 +212,6 @@ include_directories(
 add_executable(sample_motion src/sample_motion.cpp)
 target_link_libraries(sample_motion ${catkin_LIBRARIES})
 
+add_executable(xarm_traj_controller src/xarm_hardware_interface.cpp)
+target_link_libraries(xarm_traj_controller ${catkin_LIBRARIES} libxarm7.so)
 
