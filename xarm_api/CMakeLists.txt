@@ -1,30 +1,22 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(xarm_controller)
+project(xarm_api)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-add_compile_options(-std=c++11)
+ add_compile_options(-std=c++11)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  controller_manager
-  joint_state_controller
-  # robot_state_publisher
-  # cmake_modules
-  control_msgs
-  control_toolbox
-  xarm_api
-  xarm_msgs
-  hardware_interface
-  # joint_limits_interface
-  # roscpp
-  sensor_msgs
+  roscpp
   std_msgs
-  # trajectory_msgs
-  # transmission_interface
-  # urdf
+  std_srvs
+  genmsg
+  xarm_msgs
+  sensor_msgs
 )
+
+set(XARM_API_DIR src/xarm_core)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -83,7 +75,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate added messages and services with any dependencies listed here
 # generate_messages(
 #   DEPENDENCIES
-#   std_msgs  # Or other packages containing msgs
+#   std_msgs
 # )
 
 ################################################
@@ -116,10 +108,10 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include 
-#  LIBRARIES xarm7_control
-#  CATKIN_DEPENDS controller_manager joint_state_controller robot_state_publisher
-#  DEPENDS system_lib
+  INCLUDE_DIRS include
+  LIBRARIES xarm_api
+  CATKIN_DEPENDS roscpp std_msgs
+  DEPENDS system_lib
 )
 
 ###########
@@ -129,24 +121,55 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-  include
+ include
   ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/xarm7_control.cpp
-# )
+add_library(${PROJECT_NAME}
+   ${XARM_API_DIR}/connect.cc
+   ${XARM_API_DIR}/report_data.cc
 
+   ${XARM_API_DIR}/common/crc16.cc
+   ${XARM_API_DIR}/common/queue_memcpy.cc
+
+   ${XARM_API_DIR}/debug/debug_print.cc
+
+   ${XARM_API_DIR}/instruction/uxbus_cmd.cc
+   ${XARM_API_DIR}/instruction/uxbus_cmd_ser.cc
+   ${XARM_API_DIR}/instruction/uxbus_cmd_tcp.cc
+
+   ${XARM_API_DIR}/linux/network.cc
+   ${XARM_API_DIR}/linux/thread.cc
+
+   ${XARM_API_DIR}/port/serial.cc
+   ${XARM_API_DIR}/port/socket.cc
+
+ )
+
+add_library(xarm_ros_client
+  src/xarm_ros_client.cpp
+)
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
-# add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/xarm7_control_node.cpp)
+add_executable(example1_report_norm_node 
+   test/example1_report_norm.cc 
+)
+
+add_executable(xarm_driver_node
+   src/xarm_driver_node.cpp
+   src/xarm_driver.cpp
+)
+
+add_executable(move_test
+   test/move_test.cpp
+)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -159,9 +182,20 @@ include_directories(
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(${PROJECT_NAME}_node
-#   ${catkin_LIBRARIES}
-# )
+ target_link_libraries(example1_report_norm_node 
+   ${PROJECT_NAME}
+   ${catkin_LIBRARIES}
+ )
+
+ target_link_libraries(xarm_driver_node 
+   ${PROJECT_NAME}
+   ${catkin_LIBRARIES}
+ )
+
+target_link_libraries(move_test 
+   ${PROJECT_NAME}
+   ${catkin_LIBRARIES}
+ )
 
 #############
 ## Install ##
@@ -203,17 +237,10 @@ include_directories(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_xarm7_control.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_xarm_api.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
-
-add_executable(sample_motion src/sample_motion.cpp)
-target_link_libraries(sample_motion ${catkin_LIBRARIES})
-
-add_executable(xarm_traj_controller src/xarm_hardware_interface.cpp)
-target_link_libraries(xarm_traj_controller xarm_ros_client ${catkin_LIBRARIES})
-

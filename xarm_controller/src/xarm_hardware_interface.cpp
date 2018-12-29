@@ -20,8 +20,9 @@
 #include <sensor_msgs/JointState.h>
 // for mutex
 #include <pthread.h>
-#include "xarm/connect.h"
+// xarm
 #include "xarm/instruction/uxbus_cmd_config.h"
+#include "xarm_ros_client.h"
 
 namespace xarm_control
 {
@@ -31,14 +32,14 @@ const std::string jnt_state_topic = "joint_states";
 class XArmHWInterface : public hardware_interface::RobotHW
 {
 public:
-	XArmHWInterface(unsigned int dof, const std::string& robot_ip, ros::NodeHandle &root_nh);
+	XArmHWInterface(unsigned int dof, std::vector<std::string>& jnt_names, const std::string& robot_ip, ros::NodeHandle &root_nh):dof_(dof),xarm(root_nh)
+	{
+		jnt_names_ = jnt_names;
+		clientInit(robot_ip, root_nh);
+	};
 	~XArmHWInterface();
-	// bool init(ros::NodeHandle& root_nh, ros::NodeHandle &robot_hw_nh); 
-	void read(/*const ros::Time& time, const ros::Duration& period*/);
-	void write(/*const ros::Time& time, const ros::Duration& period*/);
-
-	// ros::Time get_time();
-	// ros::Duration get_period();
+	void read();
+	void write();
 
 	/* TODO:
 	virtual bool prepareSwitch(const std::list<ControllerInfo>& start_list,
@@ -48,8 +49,9 @@ public:
 
 private:
 	unsigned int dof_;
-	std::vector<std::string> jnt_names_ = {"joint1", "joint2", "joint3", "joint4", "joint5", "joint6", "joint7"};
+	std::vector<std::string> jnt_names_;
 	std::vector<double> position_cmd_;
+	std::vector<float> position_cmd_float_;
 	std::vector<double> velocity_cmd_;
 	std::vector<double> effort_cmd_;
 
@@ -57,8 +59,7 @@ private:
 	std::vector<double> velocity_fdb_;
 	std::vector<double> effort_fdb_;
 
-	// ros::Time last_called_time, this_called_time;
-	UxbusCmd *arm_cmd;
+	xarm_api::XArmROSClient xarm;
 
 	// pthread_mutex_t mutex_cmd = PTHREAD_MUTEX_INITIALIZER, mutex_fdb = PTHREAD_MUTEX_INITIALIZER;
 	// pthread_mutex_lock(&mutex);
@@ -70,14 +71,16 @@ private:
   	hardware_interface::VelocityJointInterface vj_interface_;
 
 	ros::Subscriber pos_sub_, vel_sub_, effort_sub_;
+
+	void clientInit(const std::string& robot_ip, ros::NodeHandle &root_nh);
 	void pos_fb_cb(const sensor_msgs::JointState::ConstPtr& data);
 
 };
 
-XArmHWInterface::XArmHWInterface(unsigned int dof, const std::string& robot_ip, ros::NodeHandle &root_nh)
+void XArmHWInterface::clientInit(const std::string& robot_ip, ros::NodeHandle &root_nh)
 {
-	dof_=dof;
 	position_cmd_.resize(dof_);
+	position_cmd_float_.resize(dof_);
 	position_fdb_.resize(dof_);
 	velocity_cmd_.resize(dof_);
 	velocity_fdb_.resize(dof_);
@@ -85,8 +88,6 @@ XArmHWInterface::XArmHWInterface(unsigned int dof, const std::string& robot_ip, 
 	effort_fdb_.resize(dof_);
 
 	pos_sub_ = root_nh.subscribe(jnt_state_topic, 100, &XArmHWInterface::pos_fb_cb, this);
-
-	// ros::Duration(2).sleep();
 
 	for(unsigned int j=0; j < dof_; j++)
   	{
@@ -103,26 +104,30 @@ XArmHWInterface::XArmHWInterface(unsigned int dof, const std::string& robot_ip, 
 
 
   	// xArm:
-  	char ip_non_const[50];
-  	strcpy(ip_non_const,robot_ip.c_str());
+  	// char ip_non_const[50];
+  	// strcpy(ip_non_const,robot_ip.c_str());
+  	// arm_cmd = connect_tcp_control(ip_non_const);
+  	
+  	int ret1 = xarm.motionEnable(1);
+  	int ret2 = xarm.setMode(XARM_MODE::SERVO);
+  	int ret3 = xarm.setState(XARM_STATE::START);
 
-  	arm_cmd = connect_tcp_control(ip_non_const);
-
-  	arm_cmd->motion_en(8, 1);
-
-  	arm_cmd->set_mode(XARM_MODE::SERVO);
-
-  	arm_cmd->set_state(XARM_STATE::START);
-
+  	if(ret1 || ret2 || ret3)
+  	{
+  		ROS_ERROR("The Xarm may not be properly connected, PLEASE CHECK!!!");
+  		ROS_ERROR("Did you specify the correct ros param xarm_robot_ip ? Exitting...");
+  		exit(1);
+  	}
 
 }
 
 XArmHWInterface::~XArmHWInterface()
 {
-	arm_cmd->set_mode(XARM_MODE::POSE);
+	xarm.setMode(XARM_MODE::POSE);
+	// arm_cmd->set_mode(XARM_MODE::POSE);
 	// arm_cmd->set_state(XARM_STATE::START);
-	arm_cmd->close();
-	fprintf(stderr, "Finish, XArm Disconnected.\n");
+	// arm_cmd->close();
+
 }
 
 void XArmHWInterface::pos_fb_cb(const sensor_msgs::JointState::ConstPtr& data)
@@ -136,51 +141,21 @@ void XArmHWInterface::pos_fb_cb(const sensor_msgs::JointState::ConstPtr& data)
 	}
 }
 
-// void XArmHWInterface::init(ros::NodeHandle& root_nh, ros::NodeHandle &robot_hw_nh)
-// {
-// 	root_nh.subscribe("/joint_states", 100, &XArmHWInterface::pos_fb_cb, this);
-
-// }
-
-void XArmHWInterface::read(/*const ros::Time& time, const ros::Duration& period*/)
+void XArmHWInterface::read()
 {
 
 }
 
-void XArmHWInterface::write(/*const ros::Time& time, const ros::Duration& period*/)
+void XArmHWInterface::write()
 {
 	// call servoj(joint_cmds[dof_]); // low level C++ api or call service
-	float mvjoint[dof_];
 	for(int k=0; k<dof_; k++)
 	{
-		mvjoint[k] = (float)position_cmd_[k];
+		position_cmd_float_[k] = (float)position_cmd_[k];
 	}
 
-	arm_cmd->move_servoj(mvjoint, 0, 0, 0);
-
-	// if(fabs(position_cmd_[0]>0.45))
-	// {
-	// 	fprintf(stderr, "set_servoj:\t");
-	// 	for(int i=0; i<dof_; i++)
-	// 	{
-	// 		fprintf(stderr, "%lf\t", position_cmd_[i]);
-	// 	}
-	// 	fprintf(stderr, "\n");
-	// }
+	xarm.setServoJ(position_cmd_float_);
 }
-
-// ros::Time XArmHWInterface::get_time()
-// {
-// 	this_called_time = ros::Time::now();
-// 	return this_called_time;
-// }
-
-// ros::Duration XArmHWInterface::get_period()
-// {
-// 	ros::Duration tmp = this_called_time - last_called_time;
-// 	last_called_time = this_called_time;
-// 	return tmp;
-// }
 
 } // namespace xarm_control
 
@@ -190,8 +165,28 @@ int main(int argc, char**argv)
 	ros::init(argc, argv, "xarm_controller");
 	ros::NodeHandle nh;
 	ros::Rate r(100); // ServoJ mode can not handle update rate greater than 100Hz
-	std::string ip="192.168.1.121";
-	xarm_control::XArmHWInterface xarm_hw(7, ip, nh);
+	std::string ip;
+	std::vector<std::string> jnt_names;
+	int xarm_dof = 0;
+	if(!nh.hasParam("DOF"))
+	{
+		ROS_ERROR("ROS Parameter xarm_dof not specified!");
+	}
+	if(!nh.hasParam("xarm_robot_ip"))
+	{
+		ROS_ERROR("ROS Parameter xarm_robot_ip not specified!");
+	}
+	
+	nh.getParam("DOF", xarm_dof);
+	nh.getParam("xarm_robot_ip", ip);
+	nh.getParam("joint_names", jnt_names);
+
+	ros::service::waitForService("motion_ctrl");
+  	ros::service::waitForService("set_state");
+  	ros::service::waitForService("set_mode");
+  	ros::service::waitForService("move_servoj");
+	ros::Duration(1.0).sleep();
+	xarm_control::XArmHWInterface xarm_hw(xarm_dof, jnt_names, ip, nh);
 	controller_manager::ControllerManager cm(&xarm_hw, nh);
 
   	ros::AsyncSpinner spinner(4);
@@ -207,7 +202,6 @@ int main(int argc, char**argv)
 	   ros::Duration elapsed = ros::Time::now() - ts;
 	   ts = ros::Time::now();
 	   // xarm_hw.read();
-	   // cm.update(xarm_hw.get_time(), xarm_hw.get_period());
 	   cm.update(ts, elapsed);
 	   xarm_hw.write();
 	   r.sleep();

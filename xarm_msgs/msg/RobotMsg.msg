@@ -1,0 +1,10 @@
+int16 state
+int16 mode
+int16 cmdnum
+int16 mt_brake
+int16 mt_able
+int16 err
+int16 warn
+float32[] angle
+float32[6] pose
+float32[6] offset
