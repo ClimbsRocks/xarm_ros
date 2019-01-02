@@ -8,7 +8,14 @@
 #include "xarm/instruction/uxbus_cmd_config.h"
 
 namespace xarm_api
-{
+{   
+    XARMDriver::~XARMDriver()
+    {
+        arm_cmd_->set_mode(XARM_MODE::POSE);
+        arm_cmd_->close();
+        spinner.stop();
+    }
+
     void XARMDriver::XARMDriverInit(ros::NodeHandle& root_nh, char *server_ip)
     {   
         nh_ = root_nh;

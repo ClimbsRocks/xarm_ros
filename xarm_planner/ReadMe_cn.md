@@ -10,9 +10,9 @@
 ```
 或者如果希望直接控制真机，运行:  
 ```bash
-   $ roslaunch xarm_planner xarm_planner_realHW.launch robot_ip:=<your controller box LAN IP address>
+   $ roslaunch xarm_planner xarm_planner_realHW.launch robot_ip:=<your controller box LAN IP address> robot_dof:=<7/6/5>
 ```
-这个节点提供针对笛卡尔或者关节坐标进行轨迹规划的service，Service的定义可以在srv文件夹寻找。 用户可以调用相关service去尝试进行轨迹规划求解, 并会收到成功与否的布尔值。 按以上步骤启动节点之后，可以先尝试命令行方法使用：
+'robot_dof'参数指的是xArm的关节数目 (默认值为7)，这个节点提供针对笛卡尔或者关节坐标进行轨迹规划的service，Service的定义可以在srv文件夹寻找。 用户可以调用相关service去尝试进行轨迹规划求解, 并会收到成功与否的布尔值。 按以上步骤启动节点之后，可以先尝试命令行方法使用：
 
 ## 关节空间目标规划:  
 ```bash
@@ -46,7 +46,7 @@
 ```
 
 除了命令行，另一种调用service或发布topic的方法是通过编程的方法。 用户可以参考[ROS教程1](http://wiki.ros.org/ROS/Tutorials/WritingServiceClient%28c%2B%2B%29) 以及 [ROS教程2](http://wiki.ros.org/ROS/Tutorials/WritingPublisherSubscriber%28c%2B%2B%29) 去了解怎样实现, 亦或者参考 src 目录下的'xarm_simple_planner_test.cpp'。  
-若想执行此测试程序, 在启动simple planner节点后，运行:
+若想执行此测试程序(for xArm7 only, user can modify the command list for other models), 在启动simple planner节点后，运行:
 ```bash
    $ rosrun xarm_planner xarm_simple_planner_test
 ```

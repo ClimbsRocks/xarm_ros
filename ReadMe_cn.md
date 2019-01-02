@@ -1,12 +1,15 @@
 # 1. 简介：
    &ensp;&ensp;此代码库包含XArm模型文件以及相关的控制、规划等示例开发包。开发及测试使用的环境为 Ubuntu 16.04 + ROS Kinetic Kame。
-   维护者: Jimy (jimy.zhang@ufactory.cc) Jason (jason@ufactory.cc)
+   维护者: Jimy (jimy.zhang@ufactory.cc) Jason (jason@ufactory.cc)  
+   ***以下的指令说明是基于xArm7, 其他型号用户可以在对应位置将'xarm7'替换成'xarm6'或'xarm5'***
 
 # 2. 更新记录：
    此代码库仍然处在早期开发阶段，新的功能支持、示例代码，bug修复等等会保持更新。  
    * 添加Xarm 7 描述文档，3D图形文件以及controller示例，用于进行ROS可视化仿真模拟。
    * 添加MoveIt!规划器支持，用于控制Gazebo/RViz模型或者XArm真机，但二者不可同时启动。
    * 由ROS直接控制XArm真机的相关支持目前还是Beta版本，用户使用时应尽量小心，我们会尽快完善。
+   * 添加 xArm hardware interface 并在驱动真实机械臂时使用 ROS position_controllers/JointTrajectoryController。
+   * 添加 xArm 6 初版仿真支持。
 
 # 3. 准备工作
 
@@ -48,8 +51,11 @@ $ echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
 ```bash
 $ source ~/.bashrc
 ```
-
-## 4.5 如果已安装Gazebo,可以执行demo查看效果
+## 4.5 在RViz环境试用:
+```bash
+$ roslaunch xarm_description xarm7_rviz_display.launch
+```
+## 4.6 如果已安装Gazebo,可以执行demo查看效果
    ```bash
    $ roslaunch xarm_gazebo xarm7_beside_table.launch [run_demo:=true]
    ```
@@ -72,7 +78,7 @@ $ source ~/.bashrc
    2) effort_controllers/JointPositionController: 通过关节力矩接口实现的位置控制器。  
    3) effort_controllers/JointEffortController: 纯关节力矩控制器（只有关节力矩命令/反馈接口）。  
    4) position_controllers/JointPositionController: 纯位置控制器（只有关节位置命令/反馈接口）。
-   用户可以根据需要添加自己的controller, 参考: http://wiki.ros.org/ros_control (controllers)
+   这些定义好的控制器仅用作仿真的例子, 当控制真实机械臂时只提供位置接口。用户可以根据需要添加自己的controller, 参考: http://wiki.ros.org/ros_control (controllers)
 
 ### 5.3.2 xarm_controller/exec
   &ensp;&ensp;用户可以将自己的控制程序 (shell, python, etc) 放在这里，将其编译或设置为executable后通过 'rosrun'命令执行。
@@ -110,6 +116,6 @@ $ source ~/.bashrc
 
 #### 启动 xarm simple motion planner 控制 xArm 真实机械臂:  
 ```bash
-   $ roslaunch xarm_planner xarm_planner_realHW.launch robot_ip:=<your controller box LAN IP address>
+   $ roslaunch xarm_planner xarm_planner_realHW.launch robot_ip:=<your controller box LAN IP address> robot_dof:=<7/6/5>
 ```
-这个简单实现的规划器接口是基于 move_group interface, 可以使用户通过service指定目标位置进行规划和执行。 这部分的详细使用方法请阅读***xarm_planner包***的***ReadMe***文档。
+'robot_dof'参数指的是xArm的关节数目 (默认值为7)，这个简单实现的规划器接口是基于 move_group interface, 可以使用户通过service指定目标位置进行规划和执行。 这部分的详细使用方法请阅读***xarm_planner包***的***ReadMe***文档。

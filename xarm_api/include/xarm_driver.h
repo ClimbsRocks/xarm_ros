@@ -19,7 +19,7 @@ namespace xarm_api
     {
         public:
             XARMDriver():spinner(4){spinner.start();};
-            ~XARMDriver(){spinner.stop();};
+            ~XARMDriver();
             void XARMDriverInit(ros::NodeHandle& root_nh, char *server_ip);
 
             bool MotionCtrlCB(xarm_msgs::SetAxis::Request &req, xarm_msgs::SetAxis::Response &res);

@@ -21,6 +21,7 @@ int XArmROSClient::motionEnable(short en)
     if(motion_ctrl_client_.call(set_axis_srv_))
     {
         ROS_INFO("%s\n", set_axis_srv_.response.message.c_str());
+        return set_axis_srv_.response.ret;
     }
     else
     {
@@ -28,7 +29,6 @@ int XArmROSClient::motionEnable(short en)
         return 1;
     }
 
-    return 0;
 }
 
 int XArmROSClient::setState(short state)
@@ -37,13 +37,13 @@ int XArmROSClient::setState(short state)
     if(set_state_client_.call(set_int16_srv_))
     {
         ROS_INFO("%s\n", set_int16_srv_.response.message.c_str());
+        return set_int16_srv_.response.ret;
     }
     else
     {
         ROS_ERROR("Failed to call service set_state");
         return 1;
     }
-    return 0;
 }
 
 int XArmROSClient::setMode(short mode)
@@ -52,6 +52,7 @@ int XArmROSClient::setMode(short mode)
     if(set_mode_client_.call(set_int16_srv_))
     {
         ROS_INFO("%s\n", set_int16_srv_.response.message.c_str());
+        return set_int16_srv_.response.ret;
     }
     else
     {
@@ -59,7 +60,6 @@ int XArmROSClient::setMode(short mode)
         return 1;
     }  
 
-    return 0;
 }
 
 int XArmROSClient::setServoJ(const std::vector<float>& joint_cmd)
@@ -72,13 +72,13 @@ int XArmROSClient::setServoJ(const std::vector<float>& joint_cmd)
     if(move_servoj_client_.call(move_srv_))
     {
         // ROS_INFO("%s\n", move_srv_.response.message.c_str());
+        return move_srv_.response.ret;
     }
     else
     {
         ROS_ERROR("Failed to call service move_servoj");
         return 1;
     }
-    return 0;
 }
 
 }
