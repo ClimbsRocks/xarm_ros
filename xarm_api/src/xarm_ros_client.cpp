@@ -1,3 +1,9 @@
+/* Copyright 2018 UFACTORY Inc. All Rights Reserved.
+ *
+ * Software License Agreement (BSD License)
+ *
+ * Author: Jason <jason@ufactory.cc>
+ ============================================================================*/
 #include <xarm_ros_client.h>
 
 namespace xarm_api{

@@ -51,6 +51,15 @@ int main(int argc, char **argv)
     double acc_t = 0.0;
     double cmd_before_dec = 0.0;
 
+    if(!n.hasParam("DOF"))
+    {
+    	ROS_ERROR("No DOF parameter specified! Could not give the right command");
+    	exit(-1);
+    }
+
+    int robot_dof;
+    n.getParam("DOF",robot_dof);
+
     while (ros::ok())
     {
         /**
@@ -91,26 +100,62 @@ int main(int argc, char **argv)
 
         msg.data = angle_cmd;
 
-        // Give J2 and J4 same angle_cmd from calculation
-        angle4_pub.publish(msg);
+        switch(robot_dof)
+      	{
+	      	case 7:
+	      	{
+		      	// Give J2 and J4 same angle_cmd from calculation
+		        angle4_pub.publish(msg);
 
-        angle2_pub.publish(msg);
+		        angle2_pub.publish(msg);
 
-        // Give J1 and J5 twice as angle_cmd from calculation
-        msg.data = msg.data * 2;
+		        // Give J1 and J5 twice as angle_cmd from calculation
+		        msg.data = msg.data * 2;
 
-        angle1_pub.publish(msg);
+		        angle1_pub.publish(msg);
 
-        angle5_pub.publish(msg);
+		        angle5_pub.publish(msg);
 
-        // Other joint command fixed to zero
-        msg.data = 0.0;
+		        // Other joint command fixed to zero
+		        msg.data = 0.0;
 
-        angle3_pub.publish(msg);
+		        angle3_pub.publish(msg);
 
-        angle6_pub.publish(msg);
+		        angle6_pub.publish(msg);
 
-        angle7_pub.publish(msg);
+		        angle7_pub.publish(msg);
+
+		        break;
+	    	}
+	    	case 6:
+	    	{
+	    		// Give J2 and J3 same angle_cmd from calculation
+		        angle3_pub.publish(msg);
+
+		        angle2_pub.publish(msg);
+
+		        // Give J1 and J4 twice as angle_cmd from calculation
+		        msg.data = msg.data * 2;
+
+		        angle1_pub.publish(msg);
+
+		        angle4_pub.publish(msg);
+
+		        // Other joint command fixed to zero
+		        msg.data = 0.0;
+
+		        angle5_pub.publish(msg);
+
+		        angle6_pub.publish(msg);
+
+		        break;
+	    	}
+	    	default:
+	    	{
+	    		ROS_ERROR("DOF parameter not correct, please check!");
+	    		exit(-1);
+	    	}
+	    }
 
 
         ros::spinOnce();
