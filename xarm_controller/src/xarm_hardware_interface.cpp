@@ -61,10 +61,6 @@ private:
 
 	xarm_api::XArmROSClient xarm;
 
-	// pthread_mutex_t mutex_cmd = PTHREAD_MUTEX_INITIALIZER, mutex_fdb = PTHREAD_MUTEX_INITIALIZER;
-	// pthread_mutex_lock(&mutex);
- 	// pthread_mutex_unlock(&mutex);
-
 	hardware_interface::JointStateInterface    js_interface_;
   	hardware_interface::EffortJointInterface   ej_interface_;
   	hardware_interface::PositionJointInterface pj_interface_;
@@ -80,7 +76,7 @@ private:
 void XArmHWInterface::clientInit(const std::string& robot_ip, ros::NodeHandle &root_nh)
 {
 	position_cmd_.resize(dof_);
-	position_cmd_float_.resize(dof_);
+	position_cmd_float_.resize(7); // command vector must have 7 dimention!
 	position_fdb_.resize(dof_);
 	velocity_cmd_.resize(dof_);
 	velocity_fdb_.resize(dof_);
@@ -101,12 +97,6 @@ void XArmHWInterface::clientInit(const std::string& robot_ip, ros::NodeHandle &r
 
   	registerInterface(&js_interface_);
   	registerInterface(&pj_interface_);
-
-
-  	// xArm:
-  	// char ip_non_const[50];
-  	// strcpy(ip_non_const,robot_ip.c_str());
-  	// arm_cmd = connect_tcp_control(ip_non_const);
   	
   	int ret1 = xarm.motionEnable(1);
   	int ret2 = xarm.setMode(XARM_MODE::SERVO);
@@ -124,10 +114,6 @@ void XArmHWInterface::clientInit(const std::string& robot_ip, ros::NodeHandle &r
 XArmHWInterface::~XArmHWInterface()
 {
 	xarm.setMode(XARM_MODE::POSE);
-	// arm_cmd->set_mode(XARM_MODE::POSE);
-	// arm_cmd->set_state(XARM_STATE::START);
-	// arm_cmd->close();
-
 }
 
 void XArmHWInterface::pos_fb_cb(const sensor_msgs::JointState::ConstPtr& data)
@@ -148,7 +134,6 @@ void XArmHWInterface::read()
 
 void XArmHWInterface::write()
 {
-	// call servoj(joint_cmds[dof_]); // low level C++ api or call service
 	for(int k=0; k<dof_; k++)
 	{
 		position_cmd_float_[k] = (float)position_cmd_[k];
