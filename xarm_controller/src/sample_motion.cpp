@@ -62,9 +62,6 @@ int main(int argc, char **argv)
 
     while (ros::ok())
     {
-        /**
-         * This is a message object. You stuff it with data, and then publish it.
-         */
 
         if (i <= ACC_TIME * PUB_RATE /*&& dir == -1*/)
         {

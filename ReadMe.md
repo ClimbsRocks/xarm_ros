@@ -120,4 +120,4 @@ $ roslaunch xarm_description xarm7_rviz_display.launch
 ```bash
    $ roslaunch xarm_planner xarm_planner_realHW.launch robot_ip:=<your controller box LAN IP address> robot_dof:=<7/6/5>
 ```
-Argument 'robot_dof' specifies the number of joints of your xArm (default is 7). This implemented simple planner interface is based on move_group and provide service for users to do planning & execution based on the requested target, user can find detailed instructions on how to use it inside ***xarm_planner package***.
+Argument 'robot_dof' specifies the number of joints of your xArm (default is 7). This implemented simple planner interface is based on move_group and provide service for users to do planning & execution based on the requested target, user can find detailed instructions on how to use it inside [***xarm_planner package***](./xarm_planner/).
