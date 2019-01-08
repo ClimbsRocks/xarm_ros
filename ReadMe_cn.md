@@ -21,6 +21,7 @@
 ROS Wiki: <http://wiki.ros.org/>  
 Gazebo Tutorial: <http://gazebosim.org/tutorials>  
 Gazebo ROS Control: <http://gazebosim.org/tutorials/?tut=ros_control>  
+Moveit tutorial: <http://docs.ros.org/kinetic/api/moveit_tutorials/html/>  
 
 ## 3.3 如果使用Gazebo: 请提前下载好 'table' 3D 模型
 &ensp;&ensp;这个模型在Gazebo demo中会用到。在Gazebo仿真环境中, 在model database列表里寻找 'table', 并将此模型拖入旁边的3D环境中. 通过这个操作，桌子的模型就会自动下载到本地。
@@ -61,7 +62,7 @@ $ roslaunch xarm_description xarm7_rviz_display.launch
    ```
 &ensp;&ensp;指定'run_demo'为true时Gazebo环境启动后机械臂会自动执行一套编好的循环动作。 这套简单的command trajectory写在xarm_controller\src\sample_motion.cpp. 这个demo加载的控制器使用position interface（纯位置控制）。
 
-# 5. 代码包的结构
+# 5. 代码包的介绍
    
 ## 5.1 xarm_description
    &ensp;&ensp;包含xArm描述文档, mesh文件和gazebo plugin配置等等。 不推荐用户去修改urdf描述因为其他ros package对其都有依赖。
@@ -70,26 +71,12 @@ $ roslaunch xarm_description xarm7_rviz_display.launch
    &ensp;&ensp;Gazebo world 描述文档以及仿真launch启动文档。用户可以在world中修改添加自己需要的模型与环境。
 
 ## 5.3 xarm_controller
-   &ensp;&ensp;xarm使用的Controller配置, 轨迹指令源文件, 脚本以及launch文件。 用户可以基于这个包开发或者使用自己的package。以下是详细介绍：
+   &ensp;&ensp;xarm使用的Controller配置, 硬件接口，轨迹指令源文件, 脚本以及launch文件。 用户可以基于这个包开发或者使用自己的package。***注意*** xarm_controller/config里面定义好的position/effort控制器仅用作仿真的示例, 当控制真实机械臂时只提供position_controllers/JointTrajectoryController接口。用户可以根据需要添加自己的controller, 参考: http://wiki.ros.org/ros_control (controllers)
 
-### 5.3.1 xarm_controller/config
-   需要导入ros server的控制器参数, 此demo提供三种可用的controller:  
-   1) joint_state_controller/JointStateController: 发布关节状态的topic, 可用于Rviz显示或控制器获取反馈信息。  
-   2) effort_controllers/JointPositionController: 通过关节力矩接口实现的位置控制器。  
-   3) effort_controllers/JointEffortController: 纯关节力矩控制器（只有关节力矩命令/反馈接口）。  
-   4) position_controllers/JointPositionController: 纯位置控制器（只有关节位置命令/反馈接口）。
-   这些定义好的控制器仅用作仿真的例子, 当控制真实机械臂时只提供位置接口。用户可以根据需要添加自己的controller, 参考: http://wiki.ros.org/ros_control (controllers)
+## 5.4 xarm_bringup  
+&ensp;&ensp;内含加载xarm driver的启动文件，用来控制真实机械臂。  
 
-### 5.3.2 xarm_controller/exec
-  &ensp;&ensp;用户可以将自己的控制程序 (shell, python, etc) 放在这里，将其编译或设置为executable后通过 'rosrun'命令执行。
-
-### 5.3.3 xarm_controller/src, xarm_controller/include
-   &ensp;&ensp;用户通过ROS API使用C++或python实现下发运动指令以及监控状态信息。相关源文件可以放在这里, 记得编译之前配置好CMakeLists.txt。 参考: [link1](http://wiki.ros.org/ROS/Tutorials/WritingPublisherSubscriber%28c%2B%2B%29), [link2](http://wiki.ros.org/ROS/Tutorials/WritingServiceClient%28c%2B%2B%29)  
-
-### 5.3.4 xarm_controller/launch
-&ensp;&ensp;放置启动文件：用于启动ros core并将需要的各个节点模块有序执行的文档。用户可以参考提供的launch文件，加载以及初始化控制器，或者运行带参数的ROS控制节点程序等等。
-
-## 5.4 xarm7_moveit_config
+## 5.5 xarm7_moveit_config
 &ensp;&ensp;
    部分文档由moveit_setup_assistant自动生成, 用于Moveit Planner和Rviz可视化仿真。如果已安装MoveIt!,可以尝试跑demo： 
    ```bash
@@ -108,14 +95,53 @@ $ roslaunch xarm_description xarm7_rviz_display.launch
    如果您在Moveit界面中规划了一条满意的轨迹, 点按"Execute"会使Gazebo中的虚拟机械臂同步执行此轨迹。
 
 #### Moveit!图形控制界面 + xArm 真实机械臂:
-   首先, 用户需要将 xArm-Python-SDK 正确安装到系统中才能正确控制真机。检查xArm电源和控制器已上电开启, 然后运行:  
+   首先, 检查并确认xArm电源和控制器已上电开启, 然后运行:  
    ```bash
-   $ roslaunch xarm7_moveit_config realMove_exec.launch robot_ip:=<your controller box LAN IP address>
+   $ roslaunch xarm7_moveit_config realMove_exec.launch robot_ip:=<控制盒的局域网IP地址>
    ```
    检查terminal中的输出看看有无错误信息。如果启动无误，您可以将RViz中通过Moveit规划好的轨迹通过'Execute'按钮下发给机械臂执行。***但一定确保它不会与周围环境发生碰撞！***
+  
 
+## 5.6 xarm_planner:
+这个简单包装实现的规划器接口是基于 Moveit!中的 move_group interface, 可以使用户通过service指定目标位置进行规划和执行。 这部分的详细使用方法请阅读[xarm_planner包](./xarm_planner)的文档。  
 #### 启动 xarm simple motion planner 控制 xArm 真实机械臂:  
 ```bash
-   $ roslaunch xarm_planner xarm_planner_realHW.launch robot_ip:=<your controller box LAN IP address> robot_dof:=<7/6/5>
+   $ roslaunch xarm_planner xarm_planner_realHW.launch robot_ip:=<控制盒的局域网IP地址> robot_dof:=<7/6/5>
 ```
-'robot_dof'参数指的是xArm的关节数目 (默认值为7)，这个简单实现的规划器接口是基于 move_group interface, 可以使用户通过service指定目标位置进行规划和执行。 这部分的详细使用方法请阅读***xarm_planner包***的***ReadMe***文档。
+'robot_dof'参数指的是xArm的关节数目 (默认值为7)。  
+
+## 5.7 xarm_api/xarm_msgs:
+&ensp;&ensp;这两个package提供给用户不需要自己进行轨迹规划(通过Moveit!或xarm_planner)就可以控制真实xArm机械臂的ros服务, xarm自带的控制盒会进行轨迹规划。 请***注意***这些service的执行并不通过面向'JointTrajectoryController'的hardware interface。当前支持三种运动命令（ros service同名）:  
+* move_joint: 关节空间的点到点运动, 用户仅需要给定目标关节位置，运动过程最大关节速度/加速度即可。 
+* move_line: 笛卡尔空间的直线轨迹运动，用户需要给定工具中心点（TCP）目标位置以及笛卡尔速度、加速度。  
+* move_lineb: 圆弧交融的直线运动，给定一系列中间点以及目标位置。 每两个中间点间为直线轨迹，但在中间点处做一个圆弧过渡（需给定半径）来保证速度连续。
+另外需要***注意***的是，使用以上三种service之前，需要通过service依次将机械臂模式(mode)设置为0，然后状态(state)设置为0。这些运动指令的意义和详情可以参考产品使用指南。对于相关ros service的定义和使用的message在 [xarm_msgs目录](./xarm_msgs/)中。 
+
+#### 使用 API service call 的示例:
+
+&ensp;&ensp;首先启动xarm7 service server, 以下ip地址只是举例:  
+```bash
+$ roslaunch xarm_bringup xarm7_server.launch robot_ip:=192.168.1.128
+```
+&ensp;&ensp;然后确保每个关节的控制已经使能, 参考[SetAxis.srv](/xarm_msgs/srv/SetAxis.srv):
+```bash
+rosservice call /xarm/motion_ctrl 8 1
+```
+&ensp;&ensp;在传递任何运动指令前，先***依次***设置正确的机械臂模式(0: POSE)和状态(0: READY), 参考[SetInt16.srv](/xarm_msgs/srv/SetInt16.srv):    
+```bash
+rosservice call /xarm/set_mode 0
+
+rosservice call /xarm/set_state 0
+```
+&ensp;&ensp;以上三个运动命令使用同类型的srv request: [Move.srv](./xarm_msgs/srv/Move.srv)。 比如，调用关节运动命令，最大速度 0.35 rad/s，加速度 7 rad/s^2:  
+```bash
+rosservice call /xarm/move_joint [0,0,0,0,0,0,0] 0.35 7 0 0
+```
+&ensp;&ensp;调用笛卡尔空间指令，最大线速度 200 mm/s，加速度为 2000 mm/s^2:
+```bash
+rosservice call /xarm/move_line [250,100,300,3.14,0,0] 200 2000 0 0
+```
+&ensp;&ensp;调用回原点服务 (各关节回到0角度)，最大角速度 0.35 rad/s，角加速度 7 rad/s^2:  
+```bash
+rosservice call /xarm/go_home [] 0.35 7 0 0
+```

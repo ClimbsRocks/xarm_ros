@@ -6,12 +6,10 @@
   <!-- NO_GUI_CTRL means that Rviz configuration is just for display purpose, no (Moveit) control panel loaded -->
   <arg name="no_gui_plan" default="false" />
 
-  <rosparam file="$(find xarm6_moveit_config)/config/xarm6_params.yaml" command="load"/>
-
-  <!-- common: bring up node to collect robot feedback -->
-  <include file="$(find xarm_bringup)/launch/xarm_driver_common.launch">
+  <!-- common: bring up node to enable real xArm control -->
+  <include file="$(find xarm_bringup)/launch/xarm6_server.launch">
     <arg name="robot_ip" value="$(arg robot_ip)" />
-    <arg name="dof" value="7" />
+    <arg name="use_moveit" value="true" />
   </include>
 
   <!-- load the joint trajectory controller specified in yaml -->
