@@ -30,5 +30,8 @@
 ## move_servoj:   
 &ensp;&ensp;Used in SERVOJ mode, and if user have trajectory planned, call this service with high enough rate. Each trajectory point will be executed fast and immediately. (message type: ***xarm_msgs::Move***)  
 
-***Please check the inside [srv](./srv/) and [msg](./msg/) files for detailed data information.***
+***Please check the inside [srv](./srv/) files for detailed data information.***
 
+# Feedback Status Message
+
+Refer to [RobotMsg](./msg/RobotMsg.msg) for robot feedback information contents published through topic "/xarm_states".  

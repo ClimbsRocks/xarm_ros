@@ -129,7 +129,7 @@ class XarmRTConnection
 
         int joint_num_;
         std::vector<std::string> joint_name_;
-        constexpr static const double REPORT_RATE_HZ = 50;
+        constexpr static const double REPORT_RATE_HZ = 10; /* 10Hz, same with norm_report frequency */
 };
 
 int main(int argc, char **argv)
