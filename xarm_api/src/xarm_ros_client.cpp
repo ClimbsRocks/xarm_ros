@@ -14,6 +14,7 @@ XArmROSClient::XArmROSClient(ros::NodeHandle& nh)
 	motion_ctrl_client_ = nh_.serviceClient<xarm_msgs::SetAxis>("motion_ctrl");
 	set_mode_client_ = nh_.serviceClient<xarm_msgs::SetInt16>("set_mode");
 	set_state_client_ = nh_.serviceClient<xarm_msgs::SetInt16>("set_state");
+    set_tcp_offset_client_ = nh_.serviceClient<xarm_msgs::TCPOffset>("set_tcp_offset");
   	go_home_client_ = nh_.serviceClient<xarm_msgs::Move>("go_home");
 	move_lineb_client_ = nh_.serviceClient<xarm_msgs::Move>("move_lineb");
     move_line_client_ = nh_.serviceClient<xarm_msgs::Move>("move_line");
@@ -87,6 +88,33 @@ int XArmROSClient::setServoJ(const std::vector<float>& joint_cmd)
         ROS_ERROR("Failed to call service move_servoj");
         return 1;
     }
+}
+
+int XArmROSClient::setTCPOffset(const std::vector<float>& tcp_offset)
+{
+    if(tcp_offset.size() != 6)
+    {
+        ROS_ERROR("Set tcp offset service parameter should be 6-element Cartesian offset!");
+        return 1;
+    }
+    
+    offset_srv_.request.x = tcp_offset[0];
+    offset_srv_.request.y = tcp_offset[1];
+    offset_srv_.request.z = tcp_offset[2];
+    offset_srv_.request.roll = tcp_offset[3];
+    offset_srv_.request.pitch = tcp_offset[4];
+    offset_srv_.request.yaw = tcp_offset[5];
+    
+    if(set_tcp_offset_client_.call(offset_srv_))
+    {
+       return offset_srv_.response.ret;
+    }
+    else
+    {
+        ROS_ERROR("Failed to call service set_tcp_offset");
+        return 1;
+    }
+
 }
 
 int XArmROSClient::goHome(float jnt_vel_rad, float jnt_acc_rad)

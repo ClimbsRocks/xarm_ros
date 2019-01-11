@@ -8,12 +8,12 @@
 int16 state
 
 # mode of robot:
-#	0 for POSITION mode.
-#	1 for SERVOJ mode.
-#	2 for TEACHING_JOINT mode.
+#	0 for POSITION mode.(position control by xarm controller box, execute api standard commands)
+#	1 for SERVOJ mode. (Immediate execution towards received joint space target, like a step response)
+#	2 for TEACHING_JOINT mode. (Gravity compensated mode, easy for teaching)
 int16 mode
 
-# cmdnum: number of commands in the buffer.
+# cmdnum: number of commands waiting in the buffer.
 int16 cmdnum
 
 # mt_brake: if translated to binary digits, each bit represent one axis, 1 for brake enabled, 0 for brake disabled

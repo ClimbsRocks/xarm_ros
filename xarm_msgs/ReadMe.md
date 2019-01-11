@@ -6,7 +6,7 @@
 ## set_mode  
 &ensp;&ensp;To set operation mode. (message type: ***xarm_msgs::SetInt16***)  
 &ensp;&ensp;* 0 for POSE mode, the robot will be position controlled. Trajectory will be planned by XArm Controller.  
-&ensp;&ensp;* 1 for SERVOJ mode, the robot will be commanded by servo_j function, use this if user can plan trajectory.  
+&ensp;&ensp;* 1 for SERVOJ mode, the robot will be commanded by servo_j function, fast & immediate execution like a step response, use this if user can generate properly interpolated trajectory.  
 &ensp;&ensp;* 2 for TEACH_JOINT mode, Gravity compensated mode, no position control.  
 
 ## set_state   

@@ -111,11 +111,11 @@ $ roslaunch xarm_description xarm7_rviz_display.launch
 'robot_dof'参数指的是xArm的关节数目 (默认值为7)。  
 
 ## 5.7 xarm_api/xarm_msgs:
-&ensp;&ensp;这两个package提供给用户不需要自己进行轨迹规划(通过Moveit!或xarm_planner)就可以控制真实xArm机械臂的ros服务, xarm自带的控制盒会进行轨迹规划。 请***注意***这些service的执行并不通过面向'JointTrajectoryController'的hardware interface。当前支持三种运动命令（ros service同名）:  
+&ensp;&ensp;这两个package提供给用户不需要自己进行轨迹规划(通过Moveit!或xarm_planner)就可以控制真实xArm机械臂的ros服务, xarm自带的控制盒会进行轨迹规划。 请 ***注意*** 这些service的执行并不通过面向'JointTrajectoryController'的hardware interface。当前支持三种运动命令（ros service同名）:  
 * move_joint: 关节空间的点到点运动, 用户仅需要给定目标关节位置，运动过程最大关节速度/加速度即可。 
 * move_line: 笛卡尔空间的直线轨迹运动，用户需要给定工具中心点（TCP）目标位置以及笛卡尔速度、加速度。  
 * move_lineb: 圆弧交融的直线运动，给定一系列中间点以及目标位置。 每两个中间点间为直线轨迹，但在中间点处做一个圆弧过渡（需给定半径）来保证速度连续。
-另外需要***注意***的是，使用以上三种service之前，需要通过service依次将机械臂模式(mode)设置为0，然后状态(state)设置为0。这些运动指令的意义和详情可以参考产品使用指南。对于相关ros service的定义和使用的message在 [xarm_msgs目录](./xarm_msgs/)中。 
+另外需要 ***注意*** 的是，使用以上三种service之前，需要通过service依次将机械臂模式(mode)设置为0，然后状态(state)设置为0。这些运动指令的意义和详情可以参考产品使用指南。对于相关ros service的定义和使用的message在 [xarm_msgs目录](./xarm_msgs/)中。 
 
 #### 使用 API service call 的示例:
 
@@ -125,23 +125,26 @@ $ roslaunch xarm_bringup xarm7_server.launch robot_ip:=192.168.1.128
 ```
 &ensp;&ensp;然后确保每个关节的控制已经使能, 参考[SetAxis.srv](/xarm_msgs/srv/SetAxis.srv):
 ```bash
-rosservice call /xarm/motion_ctrl 8 1
+$ rosservice call /xarm/motion_ctrl 8 1
 ```
 &ensp;&ensp;在传递任何运动指令前，先***依次***设置正确的机械臂模式(0: POSE)和状态(0: READY), 参考[SetInt16.srv](/xarm_msgs/srv/SetInt16.srv):    
 ```bash
-rosservice call /xarm/set_mode 0
+$ rosservice call /xarm/set_mode 0
 
-rosservice call /xarm/set_state 0
+$ rosservice call /xarm/set_state 0
 ```
 &ensp;&ensp;以上三个运动命令使用同类型的srv request: [Move.srv](./xarm_msgs/srv/Move.srv)。 比如，调用关节运动命令，最大速度 0.35 rad/s，加速度 7 rad/s^2:  
 ```bash
-rosservice call /xarm/move_joint [0,0,0,0,0,0,0] 0.35 7 0 0
+$ rosservice call /xarm/move_joint [0,0,0,0,0,0,0] 0.35 7 0 0
 ```
 &ensp;&ensp;调用笛卡尔空间指令，最大线速度 200 mm/s，加速度为 2000 mm/s^2:
 ```bash
-rosservice call /xarm/move_line [250,100,300,3.14,0,0] 200 2000 0 0
+$ rosservice call /xarm/move_line [250,100,300,3.14,0,0] 200 2000 0 0
 ```
 &ensp;&ensp;调用回原点服务 (各关节回到0角度)，最大角速度 0.35 rad/s，角加速度 7 rad/s^2:  
 ```bash
-rosservice call /xarm/go_home [] 0.35 7 0 0
+$ rosservice call /xarm/go_home [] 0.35 7 0 0
 ```
+#### 获得反馈状态信息:
+&ensp;&ensp;如果连接了一台xArm机械臂，用户可以通过订阅 ***"/xarm_status"*** topic 获得机械臂当前的各种状态信息， 包括关节角度、工具坐标点的位置、错误、警告信息等等。具体的信息列表请参考[RobotMsg.msg](./xarm_msgs/msg/RobotMsg.msg).  
+&ensp;&ensp;另一种选择是订阅 ***"/joint_states"*** topic, 它是以[JointState.msg](http://docs.ros.org/jade/api/sensor_msgs/html/msg/JointState.html)格式发布数据的, 但是当前 ***只有 "position" 是有效数据***; "velocity" 是没有经过任何滤波的基于相邻两组位置数据进行的数值微分, 因而只能作为参考，我们目前还不提供 "effort" 的反馈数据.

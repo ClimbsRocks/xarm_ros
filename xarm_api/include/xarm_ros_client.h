@@ -15,6 +15,7 @@ public:
 	int motionEnable(short en);
 	int setState(short state);
 	int setMode(short mode);
+	int setTCPOffset(const std::vector<float>& tcp_offset);
 	int setServoJ(const std::vector<float>& joint_cmd);
 	int goHome(float jnt_vel_rad, float jnt_acc_rad=15);
 	int moveJoint(const std::vector<float>& joint_cmd, float jnt_vel_rad, float jnt_acc_rad=15);
@@ -30,11 +31,14 @@ private:
 	ros::ServiceClient move_servoj_client_;
 	ros::ServiceClient move_line_client_;
 	ros::ServiceClient move_joint_client_;
+	ros::ServiceClient set_tcp_offset_client_;
 
     xarm_msgs::SetAxis set_axis_srv_;
     xarm_msgs::SetInt16 set_int16_srv_;
+    xarm_msgs::TCPOffset offset_srv_;
     xarm_msgs::Move move_srv_;
     xarm_msgs::Move servoj_msg_;
+
 
     ros::NodeHandle nh_;
 };

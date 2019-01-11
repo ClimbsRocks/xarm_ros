@@ -19,17 +19,20 @@ namespace xarm_api
     void XARMDriver::XARMDriverInit(ros::NodeHandle& root_nh, char *server_ip)
     {   
         nh_ = root_nh;
+        // api command services:
         motion_ctrl_server_ = nh_.advertiseService("motion_ctrl", &XARMDriver::MotionCtrlCB, this);
         set_mode_server_ = nh_.advertiseService("set_mode", &XARMDriver::SetModeCB, this);
         set_state_server_ = nh_.advertiseService("set_state", &XARMDriver::SetStateCB, this);
+        set_tcp_offset_server_ = nh_.advertiseService("set_tcp_offset", &XARMDriver::SetTCPOffsetCB, this);
         go_home_server_ = nh_.advertiseService("go_home", &XARMDriver::GoHomeCB, this);
         move_joint_server_ = nh_.advertiseService("move_joint", &XARMDriver::MoveJointCB, this);
         move_lineb_server_ = nh_.advertiseService("move_lineb", &XARMDriver::MoveLinebCB, this);
         move_line_server_ = nh_.advertiseService("move_line", &XARMDriver::MoveLineCB, this);
         move_servoj_server_ = nh_.advertiseService("move_servoj", &XARMDriver::MoveServoJCB, this);
 
+        // state feedback topics:
         joint_state_ = nh_.advertise<sensor_msgs::JointState>("joint_states", 10, true);
-        robot_rt_state_ = nh_.advertise<xarm_msgs::RobotMsg>("robot_states", 10, true);
+        robot_rt_state_ = nh_.advertise<xarm_msgs::RobotMsg>("xarm_states", 10, true);
 
         arm_report_ = connect_tcp_report_norm(server_ip);
         // ReportDataNorm norm_data_;
@@ -108,6 +111,14 @@ namespace xarm_api
         return true;
     }
 
+    bool XARMDriver::SetTCPOffsetCB(xarm_msgs::TCPOffset::Request &req, xarm_msgs::TCPOffset::Response &res)
+    {
+        float offsets[6] = {req.x, req.y, req.z, req.roll, req.pitch, req.yaw};
+        res.ret = arm_cmd_->set_tcp_offset(offsets);
+        res.message = "set tcp offset: ret = " + std::to_string(res.ret); 
+        return true;
+    }
+
     bool XARMDriver::GoHomeCB(xarm_msgs::Move::Request &req, xarm_msgs::Move::Response &res)
     {
         res.ret = arm_cmd_->move_gohome(req.mvvelo, req.mvacc, req.mvtime);
@@ -122,7 +133,7 @@ namespace xarm_api
         if(req.pose.size() != 7)
         {
             res.ret = req.pose.size();
-            res.message = "pose parameters is false";
+            res.message = "pose parameters incorrect!";
             return true;
         }
         else
@@ -145,7 +156,7 @@ namespace xarm_api
         if(req.pose.size() != 6)
         {
             res.ret = -1;
-            res.message = "parameters is false";
+            res.message = "parameters incorrect!";
             return true;
         }
         else
@@ -168,7 +179,7 @@ namespace xarm_api
         if(req.pose.size() != 6)
         {
             res.ret = -1;
-            res.message = "parameters is false";
+            res.message = "parameters incorrect!";
             return true;
         }
         else
@@ -191,7 +202,7 @@ namespace xarm_api
         if(req.pose.size() != 7)
         {
             res.ret = -1;
-            res.message = "parameters is false";
+            res.message = "parameters incorrect!";
             return true;
         }
         else

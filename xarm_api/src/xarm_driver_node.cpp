@@ -29,8 +29,10 @@ class XarmRTConnection
             int err_num;
             int rxcnt;
             int i;
+            int first_cycle = 1;
+            double d, prev_angle[joint_num_];
 
-            ros::Rate r(50); // 50Hz
+            ros::Rate r(REPORT_RATE_HZ); // 50Hz
 
             while(true)
             {
@@ -52,12 +54,23 @@ class XarmRTConnection
                     js_msg.effort.resize(joint_num_);
                     for(i = 0; i < joint_num_; i++)
                     {
-                        double d;
                         d = (double)norm_data.angle_[i];
                         js_msg.name[i] = joint_name_[i];
                         js_msg.position[i] = d;
-                        js_msg.velocity[i] = 0;
-                        js_msg.velocity[i] = 0;
+
+                        if (first_cycle)
+                        {
+                            js_msg.velocity[i] = 0;
+                            first_cycle = 0;
+                        }
+                        else
+                        {
+                            js_msg.velocity[i] = (js_msg.position[i] - prev_angle[i])*REPORT_RATE_HZ;
+                        }
+
+                        js_msg.effort[i] = 0;
+
+                        prev_angle[i] = d;
                     }
                     
                     xarm_driver.pub_joint_state(js_msg);
@@ -116,6 +129,7 @@ class XarmRTConnection
 
         int joint_num_;
         std::vector<std::string> joint_name_;
+        constexpr static const double REPORT_RATE_HZ = 50;
 };
 
 int main(int argc, char **argv)

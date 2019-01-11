@@ -1,6 +1,0 @@
-# to give robot a floating point number command, usage not defined yet.
-
-float32 data
------
-int16 ret
-string message

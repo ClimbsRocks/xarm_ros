@@ -3,7 +3,7 @@
 
 #include "ros/ros.h"
 #include <xarm_msgs/SetInt16.h>
-#include <xarm_msgs/SetFloat32.h>
+#include <xarm_msgs/TCPOffset.h>
 #include <xarm_msgs/SetAxis.h>
 #include <xarm_msgs/Move.h>
 #include <xarm_msgs/RobotMsg.h>
@@ -25,6 +25,7 @@ namespace xarm_api
             bool MotionCtrlCB(xarm_msgs::SetAxis::Request &req, xarm_msgs::SetAxis::Response &res);
             bool SetModeCB(xarm_msgs::SetInt16::Request& req, xarm_msgs::SetInt16::Response& res);
             bool SetStateCB(xarm_msgs::SetInt16::Request &req, xarm_msgs::SetInt16::Response &res);
+            bool SetTCPOffsetCB(xarm_msgs::TCPOffset::Request &req, xarm_msgs::TCPOffset::Response &res);
             bool GoHomeCB(xarm_msgs::Move::Request &req, xarm_msgs::Move::Response &res);
             bool MoveJointCB(xarm_msgs::Move::Request &req, xarm_msgs::Move::Response &res);
             bool MoveLinebCB(xarm_msgs::Move::Request &req, xarm_msgs::Move::Response &res);
@@ -55,9 +56,10 @@ namespace xarm_api
             ros::ServiceServer move_lineb_server_;
             ros::ServiceServer move_line_server_;
             ros::ServiceServer move_servoj_server_;
+            ros::ServiceServer set_tcp_offset_server_;
 
             ros::Publisher joint_state_;
-            ros::Publisher robot_rt_state_;
+            ros::Publisher robot_rt_state_; 
     };
 }
 

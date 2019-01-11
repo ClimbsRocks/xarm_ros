@@ -57,9 +57,8 @@ find_package(catkin REQUIRED COMPONENTS
    FILES
    Move.srv
    SetAxis.srv
-   SetFloat32.srv
    SetInt16.srv
-   TriggerRun.srv
+   TCPOffset.srv
  )
 
 ## Generate actions in the 'action' folder

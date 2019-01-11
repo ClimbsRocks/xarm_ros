@@ -123,23 +123,27 @@ $ roslaunch xarm_bringup xarm7_server.launch robot_ip:=192.168.1.128
 ```
 &ensp;&ensp;Then make sure all the servo motors are enabled, refer to [SetAxis.srv](/xarm_msgs/srv/SetAxis.srv):
 ```bash
-rosservice call /xarm/motion_ctrl 8 1
+$ rosservice call /xarm/motion_ctrl 8 1
 ```
 &ensp;&ensp;Before any motion commands, set proper robot mode(0: POSE) and state(0: READY) ***in order***, refer to [SetInt16.srv](/xarm_msgs/srv/SetInt16.srv):    
 ```bash
-rosservice call /xarm/set_mode 0
+$ rosservice call /xarm/set_mode 0
 
-rosservice call /xarm/set_state 0
+$ rosservice call /xarm/set_state 0
 ```
 &ensp;&ensp;All motion commands use the same type of srv request: [Move.srv](./xarm_msgs/srv/Move.srv). For example, to call joint space motion with max speed 0.35 rad/s and acceleration 7 rad/s^2:  
 ```bash
-rosservice call /xarm/move_joint [0,0,0,0,0,0,0] 0.35 7 0 0
+$ rosservice call /xarm/move_joint [0,0,0,0,0,0,0] 0.35 7 0 0
 ```
 &ensp;&ensp;To call Cartesian spece motion with max speed 200 mm/s and acceleration 2000 mm/s^2:
 ```bash
-rosservice call /xarm/move_line [250,100,300,3.14,0,0] 200 2000 0 0
+$ rosservice call /xarm/move_line [250,100,300,3.14,0,0] 200 2000 0 0
 ```
 &ensp;&ensp;To go back to home (all joints at 0 rad) position with max speed 0.35 rad/s and acceleration 7 rad/s^2:  
 ```bash
-rosservice call /xarm/go_home [] 0.35 7 0 0
+$ rosservice call /xarm/go_home [] 0.35 7 0 0
 ```
+
+#### Getting status feedback:
+&ensp;&ensp;If connected with a real xArm robot, user can subscribe to the topic ***"/xarm_status"*** for feedback information about current robot states, including joint angles, TCP position, error/warning code, etc. Refer to [RobotMsg.msg](./xarm_msgs/msg/RobotMsg.msg) for content details.  
+&ensp;&ensp;Another option is subscribing to ***"/joint_states"*** topic, which is reporting in [JointState.msg](http://docs.ros.org/jade/api/sensor_msgs/html/msg/JointState.html), however, currently ***only "position" field is valid***; "velocity" is non-filtered numerical differentiation based on 2 adjacent position data, so it is just for reference; and we do not provide "effort" feedback yet.
