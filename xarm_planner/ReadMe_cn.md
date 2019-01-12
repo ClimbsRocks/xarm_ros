@@ -46,7 +46,7 @@
 ```
 
 除了命令行，另一种调用service或发布topic的方法是通过编程的方法。 用户可以参考[ROS教程1](http://wiki.ros.org/ROS/Tutorials/WritingServiceClient%28c%2B%2B%29) 以及 [ROS教程2](http://wiki.ros.org/ROS/Tutorials/WritingPublisherSubscriber%28c%2B%2B%29) 去了解怎样实现, 亦或者参考 src 目录下的'xarm_simple_planner_test.cpp'。  
-若想执行此测试程序(for xArm7 only, user can modify the command list for other models), 在启动simple planner节点后，运行:
+若想执行此测试程序( ***此测试程序仅限xArm7运行***，不过用户可以更改源代码里的指令以适用于6关节或5关节), 在启动simple planner节点后，运行:
 ```bash
    $ rosrun xarm_planner xarm_simple_planner_test
 ```

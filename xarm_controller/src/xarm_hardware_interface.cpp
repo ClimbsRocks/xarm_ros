@@ -104,7 +104,8 @@ void XArmHWInterface::clientInit(const std::string& robot_ip, ros::NodeHandle &r
 
   	if(ret1 || ret2 || ret3)
   	{
-  		ROS_ERROR("The Xarm may not be properly connected, PLEASE CHECK!!!");
+  		ROS_ERROR("The Xarm may not be properly connected or hardware error exists, PLEASE CHECK or RESTART HARDWARE!!!");
+  		ROS_ERROR(" ");
   		ROS_ERROR("Did you specify the correct ros param xarm_robot_ip ? Exitting...");
   		exit(1);
   	}

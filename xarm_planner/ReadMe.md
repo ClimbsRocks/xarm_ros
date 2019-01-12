@@ -9,7 +9,7 @@ If you want to try it in simulation, run:
 ```bash
    $ roslaunch xarm_planner xarm_planner_rviz_sim.launch
 ```
-Or, if you would work with real XArm, run:  
+Or, if you would work with real xArm, run:  
 ```bash
    $ roslaunch xarm_planner xarm_planner_realHW.launch robot_ip:=<your controller box LAN IP address> robot_dof:=<7/6/5>
 ```
