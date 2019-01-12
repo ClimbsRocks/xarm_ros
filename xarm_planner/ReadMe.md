@@ -47,7 +47,7 @@ Just publish a message (type: std_msgs/Bool) to the topic "/xarm_planner_exec", 
 ```
 
 Alternative way of calling services or publish messages, is to do it programatically. User can refer to ROS [tutorial1](http://wiki.ros.org/ROS/Tutorials/WritingServiceClient%28c%2B%2B%29) and [tutorial2](http://wiki.ros.org/ROS/Tutorials/WritingPublisherSubscriber%28c%2B%2B%29) to find out how to do it, or refer to the 'xarm_simple_planner_test.cpp' in the src folder as an example.  
-To run the test program (for xArm7 only, user can modify the command list for other models), after launching the simple planner:
+To run the test program ( ***for xArm7 only***, user can modify the command list for other models), after launching the simple planner:
 ```bash
    $ rosrun xarm_planner xarm_simple_planner_test
 ```
