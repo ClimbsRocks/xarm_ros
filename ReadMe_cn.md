@@ -152,7 +152,7 @@ $ rosservice call /xarm/go_home [] 0.35 7 0 0
 
 #### 关于设定末端工具偏移量:  
 &ensp;&ensp;末端工具的偏移量可以也通过'/xarm/set_tcp_offset'服务来设定,参考下图，请注意这一坐标偏移量是基于 ***原始工具坐标系*** (坐标系B)描述的，它位于末端法兰中心，并且相对基坐标系(坐标系A)有（PI, 0, 0)的RPY旋转偏移。
-![xArmFrames](./doc/xArmFrames.png)  
+<div align=center>![xArmFrames](./doc/xArmFrames.png)  
 &ensp;&ensp;例如：
 ```bash
 $ rosservice call /xarm/set_tcp_offset 0 0 20 0 0 0

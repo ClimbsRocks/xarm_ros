@@ -2,6 +2,7 @@
    &ensp;&ensp;This repository contains the 3D model of xArm and demo packages for ROS development and simulations.Developing and testing environment: Ubuntu 16.04 + ROS Kinetic Kame.  
    Maintained by: Jason (jason@ufactory.cc) and Jimy (jimy.zhang@ufactory.cc)   
    ***Instructions below is based on xArm7, other model user can replace 'xarm7' with 'xarm6' or 'xarm5' where applicable.***
+   For simplified Chinese instructions: [简体中文版](./ReadMe_cn.md)    
 
 # 2. Update Summary
    This package is still in early development, tests, bug fixes and new functions are to be updated regularly in the future. 
@@ -151,7 +152,7 @@ $ rosservice call /xarm/go_home [] 0.35 7 0 0
 
 #### Setting Tool Center Point Offset:
 &ensp;&ensp;The tool tip point offset values can be set by calling service "/xarm/set_tcp_offset". Refer to the figure below, please note this offset coordinate is expressed with respect to ***initial tool frame*** (Frame B), which is located at flange center, with roll, pitch, yaw rotations of (PI, 0, 0) from base frame (Frame A).   
-![xArmFrames](./doc/xArmFrames.png)  
+<div align=center>![xArmFrames](./doc/xArmFrames.png)  
 &ensp;&ensp;For example:  
 ```bash
 $ rosservice call /xarm/set_tcp_offset 0 0 20 0 0 0
