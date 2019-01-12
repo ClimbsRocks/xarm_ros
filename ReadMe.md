@@ -1,6 +1,6 @@
 # 1. Introduction
    &ensp;&ensp;This repository contains the 3D model of xArm and demo packages for ROS development and simulations.Developing and testing environment: Ubuntu 16.04 + ROS Kinetic Kame.  
-   Maintained by: Jimy (jimy.zhang@ufactory.cc) and Jason (jason@ufactory.cc)  
+   Maintained by: Jason (jason@ufactory.cc) and Jimy (jimy.zhang@ufactory.cc)   
    ***Instructions below is based on xArm7, other model user can replace 'xarm7' with 'xarm6' or 'xarm5' where applicable.***
 
 # 2. Update Summary
@@ -24,7 +24,7 @@ Gazebo ROS Control: <http://gazebosim.org/tutorials/?tut=ros_control>
 Moveit tutorial: <http://docs.ros.org/kinetic/api/moveit_tutorials/html/>  
 
 ## 3.3 Download the 'table' 3D model
-&ensp;&ensp;In Gazebo simulator, navigate through the model database for 'table' item, drag and place the 3D model inside the virtual environment. It will then be downloaded locally, as 'table' is needed running the demo.
+&ensp;&ensp;In Gazebo simulator, navigate through the model database for 'table' item, drag and place the 3D model inside the virtual environment. It will then be downloaded locally, as 'table' is needed for running the demo.
 
 # 4. Usage of ROS package 'xarm_ros'
    
@@ -63,7 +63,7 @@ $ roslaunch xarm_description xarm7_rviz_display.launch
    ```
 &ensp;&ensp;Add the run_demo option if you wish to see a pre-programed loop motion in action. The command trajectory is written in xarm_controller\src\sample_motion.cpp. And the trajectory in this demo is controlled by pure position interface.
 
-# 5. Package description
+# 5. Package description & Usage Guidance
    
 ## 5.1 xarm_description
    &ensp;&ensp;xArm7 description files, mesh files and gazebo plugin configurations, etc. It's not recommended to change the xarm description file since other packages depend on it. 
@@ -113,7 +113,7 @@ Argument 'robot_dof' specifies the number of joints of your xArm (default is 7).
 * move_joint: joint space point to point command, given target joint angles, max joint velocity and acceleration.  
 * move_line: straight-line motion to the specified Cartesian Tool Centre Point(TCP) target.  
 * move_lineb: a list of via points followed by target Cartesian point. Each segment is straight-line with Arc blending at the via points, to make velocity continuous.  
-Please ***keep in mind that*** before calling the three motion services above, first set robot mode to be 0, then set robot state to be 0, by calling relavent services. Meaning of the commands are consistent with the descriptions in product ***user manual***, refer to it and the [xarm_msgs package](./xarm_msgs/) for more details and usage guidance.
+Please ***keep in mind that*** before calling the three motion services above, first set robot mode to be 0, then set robot state to be 0, by calling relavent services. Meaning of the commands are consistent with the descriptions in product ***user manual***, other xarm API supported functions are also available as service call. Refer to [xarm_msgs package](./xarm_msgs/) for more details and usage guidance.
 
 #### Example of using API service calls:
 
@@ -145,5 +145,15 @@ $ rosservice call /xarm/go_home [] 0.35 7 0 0
 ```
 
 #### Getting status feedback:
-&ensp;&ensp;If connected with a real xArm robot, user can subscribe to the topic ***"/xarm_status"*** for feedback information about current robot states, including joint angles, TCP position, error/warning code, etc. Refer to [RobotMsg.msg](./xarm_msgs/msg/RobotMsg.msg) for content details.  
+&ensp;&ensp;Having connected with a real xArm robot by running 'xarm7_server.launch', user can subscribe to the topic ***"/xarm_status"*** for feedback information about current robot states, including joint angles, TCP position, error/warning code, etc. Refer to [RobotMsg.msg](./xarm_msgs/msg/RobotMsg.msg) for content details.  
 &ensp;&ensp;Another option is subscribing to ***"/joint_states"*** topic, which is reporting in [JointState.msg](http://docs.ros.org/jade/api/sensor_msgs/html/msg/JointState.html), however, currently ***only "position" field is valid***; "velocity" is non-filtered numerical differentiation based on 2 adjacent position data, so it is just for reference; and we do not provide "effort" feedback yet.
+&ensp;&ensp;In consideration of performance, current update rate of above two topics are set at ***10Hz***.  
+
+#### Setting Tool Center Point Offset:
+&ensp;&ensp;The tool tip point offset values can be set by calling service "/xarm/set_tcp_offset". Refer to the figure below, please note this offset coordinate is expressed with respect to ***initial tool frame*** (Frame B), which is located at flange center, with roll, pitch, yaw rotations of (PI, 0, 0) from base frame (Frame A).   
+![xArmFrames](./doc/xArmFrames.png)  
+&ensp;&ensp;For example:  
+```bash
+$ rosservice call /xarm/set_tcp_offset 0 0 20 0 0 0
+```
+&ensp;&ensp;This is to set tool frame position offset (x = 0 mm, y = 0 mm, z = 20 mm), and orientation (RPY) offset of ( 0, 0, 0 ) radians with respect to initial tool frame (Frame B in picture). ***Remember to set this offset each time the controller box is restarted !*** 

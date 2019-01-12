@@ -1,6 +1,6 @@
 # 1. 简介：
    &ensp;&ensp;此代码库包含XArm模型文件以及相关的控制、规划等示例开发包。开发及测试使用的环境为 Ubuntu 16.04 + ROS Kinetic Kame。
-   维护者: Jimy (jimy.zhang@ufactory.cc) Jason (jason@ufactory.cc)  
+   维护者: Jason (jason@ufactory.cc),Jimy (jimy.zhang@ufactory.cc)   
    ***以下的指令说明是基于xArm7, 其他型号用户可以在对应位置将'xarm7'替换成'xarm6'或'xarm5'***
 
 # 2. 更新记录：
@@ -62,7 +62,7 @@ $ roslaunch xarm_description xarm7_rviz_display.launch
    ```
 &ensp;&ensp;指定'run_demo'为true时Gazebo环境启动后机械臂会自动执行一套编好的循环动作。 这套简单的command trajectory写在xarm_controller\src\sample_motion.cpp. 这个demo加载的控制器使用position interface（纯位置控制）。
 
-# 5. 代码包的介绍
+# 5. 代码库介绍及使用说明
    
 ## 5.1 xarm_description
    &ensp;&ensp;包含xArm描述文档, mesh文件和gazebo plugin配置等等。 不推荐用户去修改urdf描述因为其他ros package对其都有依赖。
@@ -115,7 +115,7 @@ $ roslaunch xarm_description xarm7_rviz_display.launch
 * move_joint: 关节空间的点到点运动, 用户仅需要给定目标关节位置，运动过程最大关节速度/加速度即可。 
 * move_line: 笛卡尔空间的直线轨迹运动，用户需要给定工具中心点（TCP）目标位置以及笛卡尔速度、加速度。  
 * move_lineb: 圆弧交融的直线运动，给定一系列中间点以及目标位置。 每两个中间点间为直线轨迹，但在中间点处做一个圆弧过渡（需给定半径）来保证速度连续。
-另外需要 ***注意*** 的是，使用以上三种service之前，需要通过service依次将机械臂模式(mode)设置为0，然后状态(state)设置为0。这些运动指令的意义和详情可以参考产品使用指南。对于相关ros service的定义和使用的message在 [xarm_msgs目录](./xarm_msgs/)中。 
+另外需要 ***注意*** 的是，使用以上三种service之前，需要通过service依次将机械臂模式(mode)设置为0，然后状态(state)设置为0。这些运动指令的意义和详情可以参考产品使用指南。除此之外还提供了其他xarm编程API支持的service调用, 对于相关ros service的定义在 [xarm_msgs目录](./xarm_msgs/)中。 
 
 #### 使用 API service call 的示例:
 
@@ -146,5 +146,15 @@ $ rosservice call /xarm/move_line [250,100,300,3.14,0,0] 200 2000 0 0
 $ rosservice call /xarm/go_home [] 0.35 7 0 0
 ```
 #### 获得反馈状态信息:
-&ensp;&ensp;如果连接了一台xArm机械臂，用户可以通过订阅 ***"/xarm_status"*** topic 获得机械臂当前的各种状态信息， 包括关节角度、工具坐标点的位置、错误、警告信息等等。具体的信息列表请参考[RobotMsg.msg](./xarm_msgs/msg/RobotMsg.msg).  
+&ensp;&ensp;如果通过运行'xarm7_server.launch'连接了一台xArm机械臂，用户可以通过订阅 ***"/xarm_status"*** topic 获得机械臂当前的各种状态信息， 包括关节角度、工具坐标点的位置、错误、警告信息等等。具体的信息列表请参考[RobotMsg.msg](./xarm_msgs/msg/RobotMsg.msg).  
 &ensp;&ensp;另一种选择是订阅 ***"/joint_states"*** topic, 它是以[JointState.msg](http://docs.ros.org/jade/api/sensor_msgs/html/msg/JointState.html)格式发布数据的, 但是当前 ***只有 "position" 是有效数据***; "velocity" 是没有经过任何滤波的基于相邻两组位置数据进行的数值微分, 因而只能作为参考，我们目前还不提供 "effort" 的反馈数据.
+&ensp;&ensp;基于运行时性能考虑，目前以上两个topic的数据更新率固定为 ***10Hz***.  
+
+#### 关于设定末端工具偏移量:  
+&ensp;&ensp;末端工具的偏移量可以也通过'/xarm/set_tcp_offset'服务来设定,参考下图，请注意这一坐标偏移量是基于 ***原始工具坐标系*** (坐标系B)描述的，它位于末端法兰中心，并且相对基坐标系(坐标系A)有（PI, 0, 0)的RPY旋转偏移。
+![xArmFrames](./doc/xArmFrames.png)  
+&ensp;&ensp;例如：
+```bash
+$ rosservice call /xarm/set_tcp_offset 0 0 20 0 0 0
+```
+&ensp;&ensp;这条命令设置了基于原始工具坐标系(x = 0 mm, y = 0 mm, z = 20 mm)的位置偏移量，还有（0 rad, 0 rad, 0 rad)的RPY姿态偏移量。***如果需要请在每次重新启动/上电控制盒时设定一次正确的偏移量，因为此设定会掉电丢失。***
