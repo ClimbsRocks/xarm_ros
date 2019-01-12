@@ -152,7 +152,7 @@ $ rosservice call /xarm/go_home [] 0.35 7 0 0
 
 #### Setting Tool Center Point Offset:
 &ensp;&ensp;The tool tip point offset values can be set by calling service "/xarm/set_tcp_offset". Refer to the figure below, please note this offset coordinate is expressed with respect to ***initial tool frame*** (Frame B), which is located at flange center, with roll, pitch, yaw rotations of (PI, 0, 0) from base frame (Frame A).   
-<div align=center>![xArmFrames](./doc/xArmFrames.png)  
+![xArmFrames](./doc/xArmFrames.png)  
 &ensp;&ensp;For example:  
 ```bash
 $ rosservice call /xarm/set_tcp_offset 0 0 20 0 0 0
